@@ -161,7 +161,7 @@ const REVIEW_STORAGE_KEY = "moneysplit-review-data";
 
 // Next.js inlines NEXT_PUBLIC_* vars at build time, so this must be set in Vercel's
 // project settings (not just locally) for production builds to reach the real backend.
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://127.0.0.1:5001";
+const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://127.0.0.1:5001").replace(/\/+$/, "");
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
