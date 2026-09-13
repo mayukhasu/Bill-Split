@@ -426,7 +426,19 @@ async def read_pdf(
 
     def get_page_ocr(page_index):
         if page_index not in page_ocr_cache:
-            page_image = render_page_image(document, page_index, target_long_side=2400)
+            # min_scale=1.0 here would floor the render at native resolution — fine for a
+            # normal low-DPI PDF page, but a PDF that wraps a full-res phone photo (e.g.
+            # 3024x4032pt, 1pt=1px) would then ignore target_long_side entirely and OCR the
+            # full-size image. That's a real memory risk (an even larger source photo than the
+            # two on file would OCR at its full native size with no cap at all), so let it
+            # shrink freely rather than floor at native res. Note this alone isn't enough to
+            # keep a request under Render's free-tier 512MB — RapidOCR's detector itself peaks
+            # around 900MB-1GB on these images regardless of this cap (verified below).
+            # 2800 (not 2400) is deliberate: verified against both real receipts on file —
+            # 2400 and 3200 both make RapidOCR's detector drop one line on the grocery
+            # receipt, shifting every price after it onto the wrong item; 2800 matches the
+            # full-resolution result exactly on both while still reducing pixel count ~50%.
+            page_image = render_page_image(document, page_index, target_long_side=2800, min_scale=0.1)
             page_ocr_cache[page_index] = (run_ocr(page_image), page_image.width, page_image.height)
         return page_ocr_cache[page_index]
 
