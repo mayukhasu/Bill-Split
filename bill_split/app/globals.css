@@ -1,24 +1,39 @@
 @import "tailwindcss";
 
+/* ─── Plum & Olive ───────────────────────────────────────────────────
+   A moody, low-light palette: deep magenta-plum sinking toward near-black,
+   cut with a single mustard-olive accent reserved for anything interactive.
+   brand-bg and brand-text used to share one hex (#FDFBD4) — each token below
+   now has exactly one job. */
 @theme {
-  --color-brand-bg: #FDFBD4;
-  --color-brand-text: #FDFBD4;
-  --color-brand-dark: #713600;
-  --color-brand-accent: #C05800;
-  --color-brand-accent-h: #9A4600;
-  --color-brand-muted: #7A5030;
-  --color-brand-border: #C09050;
-  --color-brand-card: #713600;
+  --color-brand-bg: #171d00;      /* page backdrop */
+  --color-brand-card: #2A1214;    /* card surface */
+  --color-brand-card-2: #331424;  /* nested surface / hover state */
+  --color-brand-chrome: #13110E;  /* header, footer, sticky panels */
+  --color-brand-border: #451A2D;
+  --color-brand-text: #F1E4E6;    /* primary text, on dark surfaces */
+  --color-brand-muted: #C9A3AF;   /* secondary / label text */
+  --color-brand-accent: #6C720C;
+  --color-brand-accent-h: #4C5409;
+  --color-brand-on-accent: #0D0B02; /* text placed on top of the accent */
+  --color-input-fill: #4C5409;         /* text input/select/drop-zone/status-card fill */
+  --color-input-fill-focus: #6C720C;   /* brighter on focus/hover */
+  --color-input-fill-edge: #142A19;    /* subtle definition (drop-zone dashed border) */
+  --color-input-fill-muted: #9FC2A6;   /* secondary text placed on the green fill */
 }
 
 :root {
-  --background: #38240D;
-  --foreground: #FDFBD4;
-  
+  --background: var(--color-brand-bg);
+  --foreground: var(--color-brand-text);
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(ellipse 900px 650px at 12% 8%, rgba(135, 144, 13, 0.257), transparent 60%),
+    radial-gradient(ellipse 1000px 750px at 88% 30%, rgba(118, 129, 13, 0.349), transparent 65%),
+    radial-gradient(ellipse 800px 700px at 30% 95%, rgba(142, 151, 13, 0.325), transparent 60%),
+    var(--background);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }

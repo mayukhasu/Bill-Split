@@ -6,11 +6,11 @@
 }
 
 .card {
-  background: #ffffff;
+  background: #2A1214;
   border-radius: 28px;
-  box-shadow: 0 20px 48px rgba(56, 36, 13, 0.10);
+  box-shadow: 0 20px 48px rgba(7, 4, 3, 0.10);
   padding: 2rem;
-  border: 1px solid #D4B080;
+  border: 1px solid #331424;
 }
 
 /* ─── Header text ────────────────────────────────────────────────── */
@@ -19,14 +19,14 @@
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #C05800;
+  color: #6C720C;
 }
 
 .title {
   margin-top: 0.5rem;
   font-size: 2rem;
   font-weight: 800;
-  color: #713600;
+  color: #F1E4E6;
 }
 
 .description {
@@ -34,13 +34,13 @@
   max-width: 680px;
   font-size: 0.97rem;
   line-height: 1.7;
-  color: #7A5030;
+  color: #C9A3AF;
 }
 
 /* ─── Section divider ────────────────────────────────────────────── */
 .sectionDivider {
   border: none;
-  border-top: 1.5px solid #D4B080;
+  border-top: 1.5px solid #331424;
   margin: 1.75rem 0;
 }
 
@@ -52,14 +52,14 @@
 .sectionTitle {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #713600;
+  color: #F1E4E6;
 }
 
 .sectionText {
   margin-top: 0.3rem;
   font-size: 0.93rem;
   line-height: 1.6;
-  color: #7A5030;
+  color: #C9A3AF;
 }
 
 /* ─── Participant section ─────────────────────────────────────────── */
@@ -90,30 +90,31 @@
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #7A5030;
+  color: #C9A3AF;
 }
 
 .nameInput {
   width: 100%;
   padding: 0.8rem 1rem;
-  border: 1.5px solid #C09050;
+  border: 1.5px solid var(--color-input-fill);
   border-radius: 12px;
-  background: #FDFBD4;
-  color: #38240D;
+  background: var(--color-input-fill);
+  color: #F1E4E6;
   font-size: 0.97rem;
-  transition: border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .nameInput:focus {
   outline: none;
-  border-color: #C05800;
+  background: var(--color-input-fill-focus);
+  border-color: var(--color-input-fill-focus);
 }
 
 .deleteButton {
   border: none;
   border-radius: 12px;
-  background: #fca5a5;
-  color: #7f1d1d;
+  background: #6B2A47;
+  color: #F1E4E6;
   padding: 0.8rem 1rem;
   font-size: 0.88rem;
   font-weight: 700;
@@ -123,7 +124,7 @@
 }
 
 .deleteButton:hover:not(:disabled) {
-  background: #f87171;
+  background: #8F3A5F;
 }
 
 .deleteButton:disabled {
@@ -134,10 +135,10 @@
 .addButton {
   width: 100%;
   margin-top: 0.85rem;
-  border: 1.5px dashed #C09050;
+  border: 1.5px dashed #451A2D;
   border-radius: 12px;
   background: transparent;
-  color: #713600;
+  color: #F1E4E6;
   padding: 0.85rem 1rem;
   font-size: 0.97rem;
   font-weight: 700;
@@ -146,8 +147,8 @@
 }
 
 .addButton:hover {
-  background: #F5F2C0;
-  border-color: #C05800;
+  background: #331424;
+  border-color: #6C720C;
 }
 
 /* ─── PDF section ────────────────────────────────────────────────── */
@@ -164,23 +165,23 @@
   justify-content: center;
   gap: 0.6rem;
   padding: 2.5rem 1.5rem;
-  border: 2px dashed #C09050;
+  border: 2px dashed var(--color-input-fill-edge);
   border-radius: 20px;
-  background: #FDFBD4;
+  background: var(--color-input-fill);
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
 .dropZone:hover {
-  border-color: #C05800;
-  background: #F5F2C0;
+  border-color: #6C720C;
+  background: var(--color-input-fill-focus);
 }
 
 .dropZoneActive {
-  border-color: #C05800;
-  background: #F5F2C0;
-  box-shadow: 0 0 0 4px rgba(192, 88, 0, 0.12);
+  border-color: #6C720C;
+  background: var(--color-input-fill-focus);
+  box-shadow: 0 0 0 4px rgba(108, 114, 12, 0.12);
 }
 
 .dropZoneIcon {
@@ -191,18 +192,18 @@
 .dropZoneText {
   font-size: 1rem;
   font-weight: 700;
-  color: #713600;
+  color: #F1E4E6;
 }
 
 .dropZoneTextHighlight {
   text-decoration: underline;
-  text-decoration-color: #C05800;
+  text-decoration-color: #6C720C;
   text-underline-offset: 2px;
 }
 
 .dropZoneHint {
   font-size: 0.82rem;
-  color: #7A5030;
+  color: var(--color-input-fill-muted);
 }
 
 .hiddenInput {
@@ -216,31 +217,31 @@
   align-items: center;
   margin-top: 0.85rem;
   font-size: 0.93rem;
-  color: #38240D;
+  color: #F1E4E6;
 }
 
 .selectedFileLabel {
   font-weight: 700;
-  color: #713600;
+  color: #F1E4E6;
 }
 
 .selectedFileValue {
   word-break: break-word;
-  color: #7A5030;
+  color: #C9A3AF;
 }
 
 /* ─── Status card ────────────────────────────────────────────────── */
 .statusCard {
   margin-top: 0.85rem;
   padding: 0.85rem 1rem;
-  border: 1.5px solid #D4B080;
+  border: 1.5px solid var(--color-input-fill-edge);
   border-radius: 14px;
-  background: #F5F2C0;
+  background: var(--color-input-fill);
 }
 
 .statusText {
   font-size: 0.92rem;
-  color: #38240D;
+  color: #F1E4E6;
   white-space: pre-wrap;
 }
 
@@ -248,7 +249,7 @@
   margin-top: 0.4rem;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #C05800;
+  color: #6C720C;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -263,8 +264,8 @@
   margin-bottom: 1rem;
   padding: 1.1rem 1.25rem;
   border-radius: 18px;
-  border: 2px solid #C05800;
-  background: #FFF8EE;
+  border: 2px solid #6C720C;
+  background: #331424;
 }
 
 .guidedProgress {
@@ -272,20 +273,20 @@
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #C05800;
+  color: #6C720C;
 }
 
 .guidedTitle {
   margin-top: 0.3rem;
   font-size: 1.05rem;
   font-weight: 800;
-  color: #713600;
+  color: #F1E4E6;
 }
 
 .guidedDescription {
   margin-top: 0.25rem;
   font-size: 0.88rem;
-  color: #7A5030;
+  color: #C9A3AF;
   line-height: 1.5;
 }
 
@@ -297,10 +298,10 @@
 }
 
 .guidedSkipButton {
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 10px;
-  background: white;
-  color: #713600;
+  background: #2A1214;
+  color: #F1E4E6;
   padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
   font-weight: 700;
@@ -309,13 +310,13 @@
 }
 
 .guidedSkipButton:hover {
-  background: #F5F2C0;
+  background: #331424;
 }
 
 .guidedExitButton {
   border: none;
   background: none;
-  color: #7A5030;
+  color: #C9A3AF;
   padding: 0.45rem 0.5rem;
   font-size: 0.85rem;
   cursor: pointer;
@@ -326,10 +327,10 @@
 .startGuidedButton {
   width: 100%;
   margin-bottom: 1rem;
-  border: 2px solid #C05800;
+  border: 2px solid #6C720C;
   border-radius: 14px;
-  background: #FFF8EE;
-  color: #713600;
+  background: #331424;
+  color: #F1E4E6;
   padding: 0.85rem 1rem;
   font-size: 0.97rem;
   font-weight: 700;
@@ -338,7 +339,7 @@
 }
 
 .startGuidedButton:hover {
-  background: #F5E8D0;
+  background: #331424;
 }
 
 /* ─── Selection toolbar ──────────────────────────────────────────── */
@@ -350,10 +351,10 @@
 }
 
 .selectionModeButton {
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 999px;
-  background: white;
-  color: #713600;
+  background: #2A1214;
+  color: #F1E4E6;
   padding: 0.5rem 0.9rem;
   font-size: 0.86rem;
   font-weight: 700;
@@ -362,14 +363,14 @@
 }
 
 .selectionModeButton:hover {
-  background: #F5F2C0;
-  border-color: #C05800;
+  background: #331424;
+  border-color: #6C720C;
 }
 
 .selectionModeButtonActive {
-  border-color: #713600;
-  background: #713600;
-  color: #FDFBD4;
+  border-color: #F1E4E6;
+  background: #6C720C;
+  color: #0D0B02;
 }
 
 /* ─── Selection legend ───────────────────────────────────────────── */
@@ -385,7 +386,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.82rem;
-  color: #7A5030;
+  color: #C9A3AF;
 }
 
 .selectionSwatch {
@@ -402,10 +403,10 @@
   max-width: 100%;
   max-height: 72vh;
   margin: 0 auto;
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 16px;
   overflow: hidden;
-  background: #f8f8f0;
+  background: #13110E;
   cursor: crosshair;
 }
 
@@ -438,8 +439,8 @@
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  background: rgba(56, 36, 13, 0.85);
-  color: #FDFBD4;
+  background: rgba(7, 4, 3, 0.85);
+  color: #F1E4E6;
   padding: 0.15rem 0.5rem;
   font-size: 0.68rem;
   font-weight: 800;
@@ -475,7 +476,7 @@
   height: 0.85rem;
   border: 2px solid white;
   border-radius: 999px;
-  background: rgba(56, 36, 13, 0.9);
+  background: rgba(7, 4, 3, 0.9);
   padding: 0;
 }
 
@@ -490,8 +491,8 @@
   margin-top: 0.85rem;
   border: none;
   border-radius: 14px;
-  background: #C05800;
-  color: #FDFBD4;
+  background: #6C720C;
+  color: #F1E4E6;
   padding: 0.9rem 1rem;
   font-size: 0.97rem;
   font-weight: 700;
@@ -500,7 +501,7 @@
 }
 
 .applySelectionButton:hover:not(:disabled) {
-  background: #9A4600;
+  background: #4C5409;
 }
 
 .applySelectionButton:disabled {
@@ -517,10 +518,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 10px;
   background: transparent;
-  color: #713600;
+  color: #F1E4E6;
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
   font-weight: 700;
@@ -529,7 +530,7 @@
 }
 
 .rawTextToggle:hover {
-  background: #F5F2C0;
+  background: #331424;
 }
 
 .rawTextBody {
@@ -538,8 +539,8 @@
 
 .scannedTextContainer {
   padding: 0.9rem 1rem;
-  background: #F5F2C0;
-  border: 1px solid #D4B080;
+  background: #331424;
+  border: 1px solid #331424;
   border-radius: 12px;
 }
 
@@ -548,13 +549,13 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #713600;
+  color: #F1E4E6;
   margin-bottom: 0.5rem;
 }
 
 .scannedText {
   font-size: 0.82rem;
-  color: #38240D;
+  color: #F1E4E6;
   white-space: pre-wrap;
   font-family: monospace;
 }
@@ -562,9 +563,9 @@
 /* ─── Lines / detected rows cards ───────────────────────────────── */
 .linesCard {
   margin-top: 0.75rem;
-  border: 1px solid #D4B080;
+  border: 1px solid #331424;
   border-radius: 16px;
-  background: #FDFBD4;
+  background: #331424;
   padding: 0.9rem 1rem;
 }
 
@@ -573,7 +574,7 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #C05800;
+  color: #6C720C;
 }
 
 .linesList {
@@ -592,7 +593,7 @@
   align-items: start;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: #38240D;
+  color: #F1E4E6;
 }
 
 .lineNumber {
@@ -602,8 +603,8 @@
   min-width: 1.8rem;
   height: 1.8rem;
   border-radius: 999px;
-  background: #713600;
-  color: #FDFBD4;
+  background: #6C720C;
+  color: #0D0B02;
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -618,9 +619,9 @@
 }
 
 .detectedRowsPane {
-  border: 1px solid #D4B080;
+  border: 1px solid #331424;
   border-radius: 16px;
-  background: #FDFBD4;
+  background: #331424;
   padding: 0.9rem 1rem;
 }
 
@@ -648,10 +649,10 @@
 }
 
 .editRowsButton {
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 999px;
-  background: white;
-  color: #713600;
+  background: #2A1214;
+  color: #F1E4E6;
   padding: 0.35rem 0.85rem;
   font-size: 0.8rem;
   font-weight: 800;
@@ -660,13 +661,13 @@
 }
 
 .editRowsButton:hover {
-  background: #F5E8D0;
+  background: #331424;
 }
 
 .editRowsButtonActive {
-  background: #713600;
-  border-color: #713600;
-  color: #FDFBD4;
+  background: #6C720C;
+  border-color: #6C720C;
+  color: #0D0B02;
 }
 
 .editableRowsList {
@@ -686,9 +687,9 @@
   width: 1.4rem;
   height: 1.4rem;
   border-radius: 999px;
-  border: 1.5px solid #C09050;
-  background: white;
-  color: #713600;
+  border: 1.5px solid #451A2D;
+  background: #2A1214;
+  color: #F1E4E6;
   font-size: 0.9rem;
   font-weight: 800;
   line-height: 1;
@@ -716,20 +717,27 @@
 }
 
 .rowDragHandle {
-  color: #C09050;
+  color: #451A2D;
   font-size: 1rem;
   user-select: none;
   cursor: grab;
 }
 
 .rowFieldInput {
-  border: 1.5px solid #C09050;
+  border: 1.5px solid var(--color-input-fill);
   border-radius: 8px;
-  background: white;
-  color: #38240D;
+  background: var(--color-input-fill);
+  color: #F1E4E6;
   font-size: 0.82rem;
   font-weight: 700;
   padding: 0.3rem 0.45rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.rowFieldInput:focus {
+  outline: none;
+  background: var(--color-input-fill-focus);
+  border-color: var(--color-input-fill-focus);
 }
 
 .rowNameInput {
@@ -745,7 +753,7 @@
 .rowRemoveButton {
   border: none;
   background: transparent;
-  color: #b91c1c;
+  color: #C97A96;
   font-size: 1.1rem;
   font-weight: 800;
   cursor: pointer;
@@ -755,10 +763,10 @@
 .addRowButton {
   margin-top: 0.5rem;
   width: 100%;
-  border: 1.5px dashed #C09050;
+  border: 1.5px dashed #451A2D;
   border-radius: 10px;
   background: transparent;
-  color: #713600;
+  color: #F1E4E6;
   font-weight: 700;
   font-size: 0.85rem;
   padding: 0.5rem;
@@ -766,7 +774,7 @@
 }
 
 .addRowButton:hover {
-  background: #F5E8D0;
+  background: #331424;
 }
 
 .scratchpadControls {
@@ -778,10 +786,10 @@
 }
 
 .scratchpadClearButton {
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 999px;
-  background: white;
-  color: #713600;
+  background: #2A1214;
+  color: #F1E4E6;
   padding: 0.3rem 0.75rem;
   font-size: 0.76rem;
   font-weight: 700;
@@ -789,16 +797,16 @@
 }
 
 .scratchpadClearButton:hover {
-  background: #F5E8D0;
+  background: #331424;
 }
 
 .scratchpadWrapper {
   position: relative;
   width: 100%;
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 12px;
   overflow: hidden;
-  background: #f8f8f0;
+  background: #13110E;
 }
 
 .scratchpadImage {
@@ -824,10 +832,10 @@
 }
 
 .pageMiniTab {
-  border: 1.5px solid #C09050;
+  border: 1.5px solid #451A2D;
   border-radius: 999px;
-  background: white;
-  color: #713600;
+  background: #2A1214;
+  color: #F1E4E6;
   padding: 0.25rem 0.6rem;
   font-size: 0.72rem;
   font-weight: 700;
@@ -835,9 +843,9 @@
 }
 
 .pageMiniTabActive {
-  background: #713600;
-  border-color: #713600;
-  color: #FDFBD4;
+  background: #6C720C;
+  border-color: #6C720C;
+  color: #0D0B02;
 }
 
 @media (max-width: 720px) {
@@ -852,8 +860,8 @@
   margin-top: 1.5rem;
   border: none;
   border-radius: 16px;
-  background: #C05800;
-  color: #FDFBD4;
+  background: #6C720C;
+  color: #F1E4E6;
   padding: 1rem 1rem;
   font-size: 1.05rem;
   font-weight: 800;
@@ -863,7 +871,7 @@
 }
 
 .nextButton:hover:not(:disabled) {
-  background: #9A4600;
+  background: #4C5409;
 }
 
 .nextButton:disabled {

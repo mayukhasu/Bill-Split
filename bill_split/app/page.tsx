@@ -88,13 +88,13 @@ const SELECTION_OPTIONS: {
   label: string;
   color: string;
 }[] = [
-  { key: "item", label: "Item Column", color: "#2563eb" },
-  { key: "price", label: "Cost Column", color: "#15803d" },
-  { key: "tax", label: "Tax", color: "#b45309" },
-  { key: "tip", label: "Tip", color: "#be185d" },
-  { key: "fees", label: "Fees", color: "#7c3aed" },
-  { key: "misc", label: "Misc", color: "#0369a1" },
-  { key: "total", label: "Total", color: "#ffcc00" },
+  { key: "item", label: "Item Column", color: "#8F3A5F" },
+  { key: "price", label: "Cost Column", color: "#8C9410" },
+  { key: "tax", label: "Tax", color: "#6B2A47" },
+  { key: "tip", label: "Tip", color: "#A9B01A" },
+  { key: "fees", label: "Fees", color: "#4C5409" },
+  { key: "misc", label: "Misc", color: "#222809" },
+  { key: "total", label: "Total", color: "#C7CE3E" },
 ];
 
 const GUIDED_STEPS: {
@@ -642,7 +642,7 @@ export default function Home() {
       canvas.height = Math.max(1, Math.round(Math.max(itemRect.h, priceRect.h)));
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#2A1214";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, itemRect.x, itemRect.y, itemRect.w, itemRect.h, 0, 0, itemRect.w, itemRect.h);
       ctx.drawImage(
@@ -1001,8 +1001,8 @@ export default function Home() {
                         top: `${Math.min(draftBox.startY, draftBox.currentY)}px`,
                         width: `${Math.abs(draftBox.currentX - draftBox.startX)}px`,
                         height: `${Math.abs(draftBox.currentY - draftBox.startY)}px`,
-                        border: `2px dashed ${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#2563eb"}`,
-                        background: `${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#2563eb"}22`,
+                        border: `2px dashed ${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}`,
+                        background: `${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}22`,
                       }}
                     >
                       <span

@@ -57,14 +57,13 @@ const REVIEW_STORAGE_KEY = "moneysplit-review-data";
 const EVERYONE_OPTION = "Everyone";
 
 const PERSON_COLORS = [
-  "#1d4ed8",
-  "#15803d",
-  "#9333ea",
-  "#be185d",
-  "#0369a1",
-  "#0f766e",
-  "#4338ca",
-  "#166534",
+  "#8F3A5F",
+  "#6C720C",
+  "#4C5409",
+  "#6B2A47",
+  "#451A2D",
+  "#222809",
+  "#331424",
 ];
 
 function getPersonColor(name: string, participants: string[]): string {
@@ -77,8 +76,8 @@ function getCardBorderColor(
   effectiveAssignees: string[],
   participants: string[]
 ): string {
-  if (effectiveAssignees.length === 0) return "#f59e0b";
-  if (selectedNames.includes(EVERYONE_OPTION)) return "#C05800";
+  if (effectiveAssignees.length === 0) return "#C7CE3E";
+  if (selectedNames.includes(EVERYONE_OPTION)) return "#6C720C";
   return getPersonColor(effectiveAssignees[0], participants);
 }
 
@@ -544,15 +543,15 @@ export default function ReviewPage() {
     return (
       <section
         className="mx-auto max-w-[720px] rounded-[28px] p-8"
-        style={{ backgroundColor: "#ffffff", border: "1px solid #D4B080" }}
+        style={{ backgroundColor: "#2A1214", border: "1px solid #331424" }}
       >
-        <h1 className="mt-2 text-[2rem] font-bold" style={{ color: "#713600" }}>
+        <h1 className="mt-2 text-[2rem] font-bold" style={{ color: "#F1E4E6" }}>
           Review Bill Items
         </h1>
-        <p className="mt-4 leading-7" style={{ color: "#7A5030" }}>
+        <p className="mt-4 leading-7" style={{ color: "#C9A3AF" }}>
           No bill setup data found. Add names on the first page before coming here.
         </p>
-        <Link href="/" className="mt-6 inline-block font-semibold" style={{ color: "#C05800" }}>
+        <Link href="/" className="mt-6 inline-block font-semibold" style={{ color: "#6C720C" }}>
           ← Back to Setup
         </Link>
       </section>
@@ -576,23 +575,23 @@ export default function ReviewPage() {
     <div className="w-full relative" style={{ paddingBottom: "5rem" }}>
       {/* ─── Step header ─── */}
       <div className="mb-6">
-        <p className="text-[0.72rem] font-extrabold uppercase tracking-[0.22em]" style={{ color: "#C05800" }}>
+        <p className="text-[0.72rem] font-extrabold uppercase tracking-[0.22em]" style={{ color: "#6C720C" }}>
           Step 2
         </p>
-        <h1 className="mt-1 text-[1.7rem] font-extrabold" style={{ color: "#713600" }}>
+        <h1 className="mt-1 text-[1.7rem] font-extrabold" style={{ color: "#F1E4E6" }}>
           Assign Each Item
         </h1>
-        <p className="mt-2 max-w-[580px] text-sm leading-6" style={{ color: "#7A5030" }}>
+        <p className="mt-2 max-w-[580px] text-sm leading-6" style={{ color: "#C9A3AF" }}>
           Tap a name on each card to assign it. Use{" "}
-          <strong style={{ color: "#713600" }}>Everyone</strong> for shared charges.
+          <strong style={{ color: "#F1E4E6" }}>Everyone</strong> for shared charges.
         </p>
       </div>
 
       {/* ─── Summary cards ─── */}
       <div className="mb-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
         {/* Total */}
-        <div className="rounded-[18px] px-4 py-3" style={{ background: "#fff", border: "1.5px solid #D4B080" }}>
-          <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#7A5030" }}>
+        <div className="rounded-[18px] px-4 py-3" style={{ background: "#2A1214", border: "1.5px solid #331424" }}>
+          <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#C9A3AF" }}>
             Total
           </span>
           <input
@@ -601,12 +600,12 @@ export default function ReviewPage() {
             onChange={(e) => updateSummaryValue("total", e.target.value)}
             placeholder="Enter total"
             className="mt-1.5 w-full rounded-xl px-3 py-2 text-sm font-bold"
-            style={{ border: "1.5px solid #C09050", background: "#FDFBD4", color: "#38240D" }}
+            style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
           />
         </div>
         {/* Tax */}
-        <div className="rounded-[18px] px-4 py-3" style={{ background: "#fff", border: "1.5px solid #D4B080" }}>
-          <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#7A5030" }}>
+        <div className="rounded-[18px] px-4 py-3" style={{ background: "#2A1214", border: "1.5px solid #331424" }}>
+          <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#C9A3AF" }}>
             Tax
           </span>
           <input
@@ -615,12 +614,12 @@ export default function ReviewPage() {
             onChange={(e) => updateSummaryValue("tax", e.target.value)}
             placeholder="Enter tax"
             className="mt-1.5 w-full rounded-xl px-3 py-2 text-sm font-bold"
-            style={{ border: "1.5px solid #C09050", background: "#FDFBD4", color: "#38240D" }}
+            style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
           />
         </div>
         {/* Misc */}
-        <div className="rounded-[18px] px-4 py-3" style={{ background: "#fff", border: "1.5px solid #D4B080" }}>
-          <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#7A5030" }}>
+        <div className="rounded-[18px] px-4 py-3" style={{ background: "#2A1214", border: "1.5px solid #331424" }}>
+          <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#C9A3AF" }}>
             Misc / Fees
           </span>
           <input
@@ -629,31 +628,31 @@ export default function ReviewPage() {
             onChange={(e) => updateSummaryValue("misc", e.target.value)}
             placeholder="Enter misc fees"
             className="mt-1.5 w-full rounded-xl px-3 py-2 text-sm font-bold"
-            style={{ border: "1.5px solid #C09050", background: "#FDFBD4", color: "#38240D" }}
+            style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
           />
         </div>
         {/* Tip */}
-        <div className="rounded-[18px] px-4 py-3" style={{ background: "#fff", border: "1.5px solid #D4B080" }}>
+        <div className="rounded-[18px] px-4 py-3" style={{ background: "#2A1214", border: "1.5px solid #331424" }}>
           <div className="flex items-center justify-between">
-            <span className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#7A5030" }}>
+            <span className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em]" style={{ color: "#C9A3AF" }}>
               {tipInputMode === "percent" ? "Tip %" : "Tip Amount"}
             </span>
-            <div className="flex overflow-hidden rounded-lg" style={{ border: "1.5px solid #C09050" }}>
+            <div className="flex overflow-hidden rounded-lg" style={{ border: "1.5px solid #451A2D" }}>
               <button
                 type="button"
                 onClick={() => setTipInputMode("amount")}
                 className="px-2 py-0.5 text-xs font-bold transition"
                 style={tipInputMode === "amount"
-                  ? { background: "#713600", color: "#FDFBD4" }
-                  : { background: "#fff", color: "#7A5030" }}
+                  ? { background: "#6C720C", color: "#0D0B02" }
+                  : { background: "#2A1214", color: "#C9A3AF" }}
               >$</button>
               <button
                 type="button"
                 onClick={() => setTipInputMode("percent")}
                 className="px-2 py-0.5 text-xs font-bold transition"
                 style={tipInputMode === "percent"
-                  ? { background: "#713600", color: "#FDFBD4" }
-                  : { background: "#fff", color: "#7A5030" }}
+                  ? { background: "#6C720C", color: "#0D0B02" }
+                  : { background: "#2A1214", color: "#C9A3AF" }}
               >%</button>
             </div>
           </div>
@@ -664,15 +663,15 @@ export default function ReviewPage() {
             onChange={(e) => setTipInputValue(e.target.value)}
             placeholder={tipInputMode === "percent" ? "e.g. 18" : "e.g. 8.00"}
             className="mt-1.5 w-full rounded-xl px-3 py-2 text-sm font-bold"
-            style={{ border: "1.5px solid #C09050", background: "#FDFBD4", color: "#38240D" }}
+            style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
           />
           {effectiveTipAmount != null && tipInputValue.trim() === "" && effectiveTotalMode === "includes-tip-and-tax" && (
-            <p className="mt-1 text-[0.72rem] font-semibold" style={{ color: "#7A5030" }}>
+            <p className="mt-1 text-[0.72rem] font-semibold" style={{ color: "#C9A3AF" }}>
               Derived: {formatCurrency(effectiveTipAmount)}
             </p>
           )}
           {tipInputMode === "percent" && tipInputValue.trim().length > 0 && effectiveTipAmount != null && (
-            <p className="mt-1 text-[0.72rem] font-semibold" style={{ color: "#7A5030" }}>
+            <p className="mt-1 text-[0.72rem] font-semibold" style={{ color: "#C9A3AF" }}>
               = {formatCurrency(effectiveTipAmount)}
             </p>
           )}
@@ -684,49 +683,49 @@ export default function ReviewPage() {
         <div
           className="mb-4 rounded-2xl px-5 py-3"
           style={{
-            background: reconcileDiff > 0.009 ? "#fff7ed" : "#f0fdf4",
-            border: `1.5px solid ${reconcileDiff > 0.009 ? "#fdba74" : "#86efac"}`,
+            background: reconcileDiff > 0.009 ? "#3A2410" : "#16281A",
+            border: `1.5px solid ${reconcileDiff > 0.009 ? "#C8791E" : "#4A7A4E"}`,
           }}
         >
-          <div className="flex flex-wrap items-center gap-1.5 text-sm font-semibold" style={{ color: "#38240D" }}>
+          <div className="flex flex-wrap items-center gap-1.5 text-sm font-semibold" style={{ color: "#F1E4E6" }}>
             <span>Items <strong>{formatCurrency(itemsSubtotal)}</strong></span>
-            {taxAmt > 0 && <><span style={{ color: "#7A5030" }}>+</span><span>Tax <strong>{formatCurrency(taxAmt)}</strong></span></>}
-            {miscAmt > 0 && <><span style={{ color: "#7A5030" }}>+</span><span>Misc <strong>{formatCurrency(miscAmt)}</strong></span></>}
+            {taxAmt > 0 && <><span style={{ color: "#C9A3AF" }}>+</span><span>Tax <strong>{formatCurrency(taxAmt)}</strong></span></>}
+            {miscAmt > 0 && <><span style={{ color: "#C9A3AF" }}>+</span><span>Misc <strong>{formatCurrency(miscAmt)}</strong></span></>}
             {effectiveTotalMode === "includes-tip-and-tax" && tipAmt > 0 && (
-              <><span style={{ color: "#7A5030" }}>+</span><span>Tip <strong>{formatCurrency(tipAmt)}</strong></span></>
+              <><span style={{ color: "#C9A3AF" }}>+</span><span>Tip <strong>{formatCurrency(tipAmt)}</strong></span></>
             )}
-            <span style={{ color: "#7A5030" }}>=</span>
+            <span style={{ color: "#C9A3AF" }}>=</span>
             <strong>{formatCurrency(computedForEquation)}</strong>
             {reconcileDiff > 0.009 ? (
-              <span style={{ color: "#c2410c" }}>
+              <span style={{ color: "#E8A34D" }}>
                 ≠ entered {formatCurrency(enteredTotal)} &nbsp;(Δ {formatCurrency(reconcileDiff)})
               </span>
             ) : (
-              <span style={{ color: "#15803d" }}>✓ matches entered {formatCurrency(enteredTotal)}</span>
+              <span style={{ color: "#8FC48F" }}>✓ matches entered {formatCurrency(enteredTotal)}</span>
             )}
           </div>
 
           {/* Total mode detection hint */}
-          <div className="mt-2 text-xs" style={{ color: "#7A5030" }}>
+          <div className="mt-2 text-xs" style={{ color: "#C9A3AF" }}>
             {totalModeOverride == null && detectedTotalMode === "excludes-tip" && (
               <span>Detected: your total covers items + tax + misc. Tip is added on top.{" "}
-                <button onClick={() => setShowTotalModeOverride(true)} className="underline font-bold" style={{ color: "#C05800" }}>Change?</button>
+                <button onClick={() => setShowTotalModeOverride(true)} className="underline font-bold" style={{ color: "#6C720C" }}>Change?</button>
               </span>
             )}
             {totalModeOverride == null && detectedTotalMode === "includes-tip-and-tax" && (
               <span>Detected: your total covers everything including tip.{" "}
-                <button onClick={() => setShowTotalModeOverride(true)} className="underline font-bold" style={{ color: "#C05800" }}>Change?</button>
+                <button onClick={() => setShowTotalModeOverride(true)} className="underline font-bold" style={{ color: "#6C720C" }}>Change?</button>
               </span>
             )}
             {totalModeOverride == null && detectedTotalMode == null && enteredTotal != null && (
               <span>Can&apos;t auto-detect what this total covers.{" "}
-                <button onClick={() => setShowTotalModeOverride(true)} className="underline font-bold" style={{ color: "#C05800" }}>Set it manually</button>
+                <button onClick={() => setShowTotalModeOverride(true)} className="underline font-bold" style={{ color: "#6C720C" }}>Set it manually</button>
               </span>
             )}
             {totalModeOverride != null && (
               <span>
                 Using: <strong>{totalModeOverride === "includes-tip-and-tax" ? "total covers everything" : "total covers items + tax + misc"}</strong>.{" "}
-                <button onClick={() => { setTotalModeOverride(null); setShowTotalModeOverride(false); }} className="underline font-bold" style={{ color: "#C05800" }}>Reset to auto-detect</button>
+                <button onClick={() => { setTotalModeOverride(null); setShowTotalModeOverride(false); }} className="underline font-bold" style={{ color: "#6C720C" }}>Reset to auto-detect</button>
               </span>
             )}
           </div>
@@ -737,21 +736,21 @@ export default function ReviewPage() {
               <button
                 onClick={() => { setTotalModeOverride("includes-tip-and-tax"); setShowTotalModeOverride(false); }}
                 className="rounded-xl px-3 py-1.5 text-xs font-bold"
-                style={{ background: "#713600", color: "#FDFBD4" }}
+                style={{ background: "#6C720C", color: "#0D0B02" }}
               >
                 Total includes everything (tip + tax + misc)
               </button>
               <button
                 onClick={() => { setTotalModeOverride("excludes-tip"); setShowTotalModeOverride(false); }}
                 className="rounded-xl px-3 py-1.5 text-xs font-bold"
-                style={{ background: "#713600", color: "#FDFBD4" }}
+                style={{ background: "#6C720C", color: "#0D0B02" }}
               >
                 Total includes only items + tax + misc (tip on top)
               </button>
               <button
                 onClick={() => setShowTotalModeOverride(false)}
                 className="rounded-xl px-3 py-1.5 text-xs font-bold"
-                style={{ background: "transparent", color: "#7A5030", border: "1px solid #C09050" }}
+                style={{ background: "transparent", color: "#C9A3AF", border: "1px solid #451A2D" }}
               >
                 Cancel
               </button>
@@ -766,38 +765,38 @@ export default function ReviewPage() {
           type="button"
           onClick={() => setSettingsOpen((o) => !o)}
           className="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition"
-          style={{ background: settingsOpen ? "#F5F2C0" : "#fff", border: "1.5px solid #C09050", color: "#713600" }}
+          style={{ background: settingsOpen ? "#331424" : "#2A1214", border: "1.5px solid #451A2D", color: "#F1E4E6" }}
         >
           ⚙ Split settings {settingsOpen ? "▲" : "▾"}
         </button>
         {settingsOpen && (
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[16px] px-4 py-3" style={{ background: "#fff", border: "1.5px solid #D4B080" }}>
+            <div className="rounded-[16px] px-4 py-3" style={{ background: "#2A1214", border: "1.5px solid #331424" }}>
               <label className="block">
-                <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em] mb-1.5" style={{ color: "#7A5030" }}>
+                <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em] mb-1.5" style={{ color: "#C9A3AF" }}>
                   Tip Split
                 </span>
                 <select
                   value={tipSplitMode}
                   onChange={(e) => setTipSplitMode(e.target.value as TipSplitMode)}
                   className="w-full rounded-xl px-3 py-2 text-sm font-bold"
-                  style={{ border: "1.5px solid #C09050", background: "#FDFBD4", color: "#38240D" }}
+                  style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                 >
                   <option value="by-spending">By spending</option>
                   <option value="evenly">Evenly</option>
                 </select>
               </label>
             </div>
-            <div className="rounded-[16px] px-4 py-3" style={{ background: "#fff", border: "1.5px solid #D4B080" }}>
+            <div className="rounded-[16px] px-4 py-3" style={{ background: "#2A1214", border: "1.5px solid #331424" }}>
               <label className="block">
-                <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em] mb-1.5" style={{ color: "#7A5030" }}>
+                <span className="block text-[0.68rem] font-extrabold uppercase tracking-[0.14em] mb-1.5" style={{ color: "#C9A3AF" }}>
                   Fee Split
                 </span>
                 <select
                   value={feeSplitMode}
                   onChange={(e) => setFeeSplitMode(e.target.value as FeeSplitMode)}
                   className="w-full rounded-xl px-3 py-2 text-sm font-bold"
-                  style={{ border: "1.5px solid #C09050", background: "#FDFBD4", color: "#38240D" }}
+                  style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                 >
                   <option value="by-spending">By spending</option>
                   <option value="evenly">Evenly</option>
@@ -810,9 +809,9 @@ export default function ReviewPage() {
 
       {/* ─── Unassigned warning ─── */}
       {splitResults.unassignedItems.length > 0 && (
-        <div className="mb-5 rounded-2xl px-5 py-4" style={{ background: "#fffbeb", border: "1.5px solid #fcd34d" }}>
-          <p className="font-bold" style={{ color: "#92400e" }}>Items still need assignments</p>
-          <p className="mt-1 text-sm" style={{ color: "#78350f" }}>
+        <div className="mb-5 rounded-2xl px-5 py-4" style={{ background: "#3A2410", border: "1.5px solid #C8791E" }}>
+          <p className="font-bold" style={{ color: "#E8A34D" }}>Items still need assignments</p>
+          <p className="mt-1 text-sm" style={{ color: "#D9B98A" }}>
             {splitResults.unassignedItems.join(", ")}
           </p>
         </div>
@@ -846,10 +845,10 @@ export default function ReviewPage() {
                 onDragEnd={handleDragEnd}
                 className="rounded-[20px] transition-all"
                 style={{
-                  background: "#ffffff",
-                  border: `1.5px solid ${isDragTarget ? "#C05800" : "#D4B080"}`,
+                  background: "#2A1214",
+                  border: `1.5px solid ${isDragTarget ? "#6C720C" : "#331424"}`,
                   borderLeft: `5px solid ${borderColor}`,
-                  boxShadow: isDragTarget ? `0 0 0 3px rgba(192,88,0,0.15)` : "0 4px 16px rgba(56,36,13,0.06)",
+                  boxShadow: isDragTarget ? `0 0 0 3px rgba(108,114,12,0.15)` : "0 4px 16px rgba(7,4,3,0.06)",
                   opacity: draggedItemId === itemRow.id ? 0.4 : 1,
                 }}
               >
@@ -859,17 +858,17 @@ export default function ReviewPage() {
                   <span
                     className="cursor-grab active:cursor-grabbing select-none mt-2.5 text-lg leading-none"
                     title="Drag to reorder"
-                    style={{ color: "#C09050" }}
+                    style={{ color: "#451A2D" }}
                   >⠿</span>
 
                   <div className="flex-1 min-w-0 space-y-2">
                     {/* Name + total + more button row */}
                     <div className="flex items-center gap-2">
                       <div className="flex-1 min-w-0 truncate">
-                        <span className="text-sm font-bold" style={{ color: "#38240D" }}>
+                        <span className="text-sm font-bold" style={{ color: "#F1E4E6" }}>
                           {itemRow.name || "Unnamed item"}
                         </span>
-                        <span className="ml-2 text-xs font-semibold" style={{ color: "#7A5030" }}>
+                        <span className="ml-2 text-xs font-semibold" style={{ color: "#C9A3AF" }}>
                           {formatCurrency(itemRow.totalCost)}
                         </span>
                       </div>
@@ -889,9 +888,9 @@ export default function ReviewPage() {
                         title={isExpanded ? "Collapse options" : "Edit name, cost, or order"}
                         className="rounded-xl px-2.5 py-1.5 text-xs font-bold transition shrink-0"
                         style={{
-                          background: isExpanded ? "#F5F2C0" : "#fff",
-                          border: "1.5px solid #C09050",
-                          color: "#713600",
+                          background: isExpanded ? "#331424" : "#2A1214",
+                          border: "1.5px solid #451A2D",
+                          color: "#F1E4E6",
                         }}
                       >
                         {isExpanded ? "✕" : "⋯"}
@@ -900,7 +899,7 @@ export default function ReviewPage() {
 
                     {/* Ratio — always visible since it's used every time you split a shared item */}
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold" style={{ color: "#7A5030" }}>Ratio</span>
+                      <span className="text-xs font-bold" style={{ color: "#C9A3AF" }}>Ratio</span>
                       <input
                         type="text"
                         value={ratioValue}
@@ -908,7 +907,7 @@ export default function ReviewPage() {
                         onBlur={() => applyRatioDraft(itemRow.id)}
                         placeholder={assignees.length > 0 ? assignees.map(() => "1").join(":") : "1:1"}
                         className="rounded-lg px-2 py-1 text-xs font-bold w-20"
-                        style={{ border: "1.5px solid #C09050", background: "#fff", color: "#38240D" }}
+                        style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                       />
                     </div>
 
@@ -916,7 +915,7 @@ export default function ReviewPage() {
                     <div className="flex flex-wrap gap-1.5">
                       {selectionOptions.map((name) => {
                         const isAssigned = selected.includes(name);
-                        const color = name === EVERYONE_OPTION ? "#713600" : getPersonColor(name, reviewData.participants);
+                        const color = name === EVERYONE_OPTION ? "#A85073" : getPersonColor(name, reviewData.participants);
                         const effectivelyAssigned =
                           name !== EVERYONE_OPTION && assignees.includes(name);
                         const share = effectivelyAssigned
@@ -934,7 +933,7 @@ export default function ReviewPage() {
                               borderStyle: "solid",
                               borderColor: color,
                               backgroundColor: isAssigned ? color : "transparent",
-                              color: isAssigned ? "#FDFBD4" : color,
+                              color: isAssigned ? "#F1E4E6" : color,
                             }}
                           >
                             {name}
@@ -952,53 +951,53 @@ export default function ReviewPage() {
                 {isExpanded && (
                   <div
                     className="mx-4 mb-4 rounded-[14px] p-3 space-y-3"
-                    style={{ background: "#FDFBD4", border: "1px solid #D4B080" }}
+                    style={{ background: "#331424", border: "1px solid #331424" }}
                   >
                     {/* Editable name */}
                     <label className="block">
-                      <span className="block mb-1 text-[0.65rem] font-extrabold uppercase tracking-widest" style={{ color: "#7A5030" }}>Item name</span>
+                      <span className="block mb-1 text-[0.65rem] font-extrabold uppercase tracking-widest" style={{ color: "#C9A3AF" }}>Item name</span>
                       <input
                         type="text"
                         value={itemRow.name}
                         onChange={(e) => updateItemRow(itemRow.id, "name", e.target.value)}
                         placeholder="Item name"
                         className="w-full rounded-xl px-3 py-1.5 text-sm font-bold"
-                        style={{ border: "1.5px solid #D4B080", background: "#fff", color: "#38240D" }}
+                        style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                       />
                     </label>
 
                     {/* Qty × $/item = Total row */}
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-xs font-bold" style={{ color: "#7A5030" }}>Qty</span>
+                      <span className="text-xs font-bold" style={{ color: "#C9A3AF" }}>Qty</span>
                       <input
                         type="number" min="1" step="1"
                         value={itemRow.quantity}
                         onChange={(e) => updateItemRow(itemRow.id, "quantity", e.target.value)}
                         className="rounded-lg px-2 py-1 text-sm font-bold text-center w-14"
-                        style={{ border: "1.5px solid #D4B080", background: "#fff", color: "#38240D" }}
+                        style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                       />
-                      <span className="text-xs font-bold" style={{ color: "#7A5030" }}>×</span>
+                      <span className="text-xs font-bold" style={{ color: "#C9A3AF" }}>×</span>
                       <input
                         type="number" min="0" step="0.01"
                         value={itemRow.unitCost}
                         onChange={(e) => updateItemRow(itemRow.id, "unitCost", e.target.value)}
                         className="rounded-lg px-2 py-1 text-sm font-bold text-center w-20"
-                        style={{ border: "1.5px solid #D4B080", background: "#fff", color: "#38240D" }}
+                        style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                       />
-                      <span className="text-xs font-bold" style={{ color: "#7A5030" }}>=</span>
+                      <span className="text-xs font-bold" style={{ color: "#C9A3AF" }}>=</span>
                       <input
                         type="number" min="0" step="0.01"
                         value={itemRow.totalCost}
                         onChange={(e) => updateItemRow(itemRow.id, "totalCost", e.target.value)}
                         className="rounded-lg px-2 py-1 text-sm font-extrabold text-center w-20"
-                        style={{ border: "1.5px solid #C09050", background: "#fff", color: "#713600" }}
+                        style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                       />
                     </div>
 
                     {/* Row # */}
                     <div className="flex flex-wrap gap-3 items-end">
                       <label className="block">
-                        <span className="block mb-1 text-[0.65rem] font-extrabold uppercase tracking-widest" style={{ color: "#7A5030" }}>Row #</span>
+                        <span className="block mb-1 text-[0.65rem] font-extrabold uppercase tracking-widest" style={{ color: "#C9A3AF" }}>Row #</span>
                         <input
                           type="number" min="1" step="1"
                           value={rowOrderValue}
@@ -1006,21 +1005,21 @@ export default function ReviewPage() {
                           onBlur={(e) => moveItemRowToPosition(itemRow.id, e.target.value)}
                           onKeyDown={(e) => { if (e.key === "Enter") moveItemRowToPosition(itemRow.id, (e.target as HTMLInputElement).value); }}
                           className="rounded-xl px-3 py-2 text-sm font-bold w-16"
-                          style={{ border: "1.5px solid #C09050", background: "#fff", color: "#38240D" }}
+                          style={{ border: "1.5px solid var(--color-input-fill)", background: "var(--color-input-fill)", color: "#F1E4E6" }}
                         />
                       </label>
                       <div className="flex gap-1.5 items-center">
                         <button type="button" onClick={() => moveToTop(itemRow.id)} disabled={index === 0}
                           title="Move to top"
                           className="rounded-lg px-2 py-1.5 text-xs font-bold transition"
-                          style={{ border: "1.5px solid #C09050", background: "#fff", color: "#713600", opacity: index === 0 ? 0.4 : 1 }}>↑↑</button>
+                          style={{ border: "1.5px solid #451A2D", background: "#2A1214", color: "#F1E4E6", opacity: index === 0 ? 0.4 : 1 }}>↑↑</button>
                         <button type="button" onClick={() => moveToBottom(itemRow.id)} disabled={index === itemRows.length - 1}
                           title="Move to bottom"
                           className="rounded-lg px-2 py-1.5 text-xs font-bold transition"
-                          style={{ border: "1.5px solid #C09050", background: "#fff", color: "#713600", opacity: index === itemRows.length - 1 ? 0.4 : 1 }}>↓↓</button>
+                          style={{ border: "1.5px solid #451A2D", background: "#2A1214", color: "#F1E4E6", opacity: index === itemRows.length - 1 ? 0.4 : 1 }}>↓↓</button>
                         <button type="button" onClick={() => removeItemRow(itemRow.id)}
                           className="rounded-lg px-2.5 py-1.5 text-xs font-bold"
-                          style={{ background: "#fca5a5", color: "#7f1d1d" }}>
+                          style={{ background: "#6B2A47", color: "#F1E4E6" }}>
                           Remove
                         </button>
                       </div>
@@ -1036,7 +1035,7 @@ export default function ReviewPage() {
             type="button"
             onClick={addItemRow}
             className="w-full rounded-[18px] py-3 text-sm font-bold transition"
-            style={{ border: "2px dashed #C09050", background: "transparent", color: "#713600" }}
+            style={{ border: "2px dashed #451A2D", background: "transparent", color: "#F1E4E6" }}
           >
             + Add Item
           </button>
@@ -1044,12 +1043,12 @@ export default function ReviewPage() {
           {/* ─── Per-person results ─── */}
           <div
             className="mt-6 rounded-[24px] p-5"
-            style={{ background: "#ffffff", border: "1.5px solid #D4B080" }}
+            style={{ background: "#2A1214", border: "1.5px solid #331424" }}
           >
-            <p className="text-[0.72rem] font-extrabold uppercase tracking-[0.18em] mb-1" style={{ color: "#C05800" }}>
+            <p className="text-[0.72rem] font-extrabold uppercase tracking-[0.18em] mb-1" style={{ color: "#6C720C" }}>
               Split Results
             </p>
-            <h2 className="text-[1.5rem] font-extrabold mb-4" style={{ color: "#713600" }}>
+            <h2 className="text-[1.5rem] font-extrabold mb-4" style={{ color: "#F1E4E6" }}>
               Per-Person Share
             </h2>
 
@@ -1065,8 +1064,8 @@ export default function ReviewPage() {
                     key={name}
                     className="rounded-[18px] p-4"
                     style={{
-                      background: "#FDFBD4",
-                      border: "1.5px solid #D4B080",
+                      background: "#331424",
+                      border: "1.5px solid #331424",
                       borderLeft: `5px solid ${color}`,
                     }}
                   >
@@ -1074,31 +1073,31 @@ export default function ReviewPage() {
                       <h3 className="text-[1.1rem] font-extrabold" style={{ color }}>
                         {name}
                       </h3>
-                      <span className="text-[1.2rem] font-extrabold" style={{ color: "#713600" }}>
+                      <span className="text-[1.2rem] font-extrabold" style={{ color: "#F1E4E6" }}>
                         {formatCurrency(bp.grandTotal)}
                       </span>
                     </div>
 
-                    <div className="mt-3 space-y-1.5 text-sm" style={{ color: "#38240D" }}>
+                    <div className="mt-3 space-y-1.5 text-sm" style={{ color: "#F1E4E6" }}>
                       <div className="flex justify-between">
-                        <span style={{ color: "#7A5030" }}>Items</span>
+                        <span style={{ color: "#C9A3AF" }}>Items</span>
                         <span className="font-semibold">{formatCurrency(bp.itemsTotal)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span style={{ color: "#7A5030" }}>Tax</span>
+                        <span style={{ color: "#C9A3AF" }}>Tax</span>
                         <span className="font-semibold">{formatCurrency(bp.taxShare)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span style={{ color: "#7A5030" }}>Misc</span>
+                        <span style={{ color: "#C9A3AF" }}>Misc</span>
                         <span className="font-semibold">{formatCurrency(bp.miscShare)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span style={{ color: "#7A5030" }}>Tip</span>
+                        <span style={{ color: "#C9A3AF" }}>Tip</span>
                         <span className="font-semibold">{formatCurrency(bp.tipShare)}</span>
                       </div>
                       <div
                         className="flex justify-between pt-1.5 font-extrabold"
-                        style={{ borderTop: "1.5px solid #D4B080", color: "#713600" }}
+                        style={{ borderTop: "1.5px solid #331424", color: "#F1E4E6" }}
                       >
                         <span>Total Owed</span>
                         <span>{formatCurrency(bp.grandTotal)}</span>
@@ -1122,15 +1121,15 @@ export default function ReviewPage() {
                             })
                           }
                           className="text-xs font-bold"
-                          style={{ color: "#C05800" }}
+                          style={{ color: "#6C720C" }}
                         >
                           {isOpen ? "Hide items ▲" : `Show ${breakdown.length} item${breakdown.length !== 1 ? "s" : ""} ▾`}
                         </button>
                         {isOpen && (
                           <ul className="mt-2 space-y-1">
                             {breakdown.map((entry, i) => (
-                              <li key={i} className="flex justify-between text-xs" style={{ color: "#38240D" }}>
-                                <span className="truncate pr-2" style={{ color: "#7A5030" }}>{entry.name}</span>
+                              <li key={i} className="flex justify-between text-xs" style={{ color: "#F1E4E6" }}>
+                                <span className="truncate pr-2" style={{ color: "#C9A3AF" }}>{entry.name}</span>
                                 <span className="font-semibold shrink-0">{formatCurrency(entry.share)}</span>
                               </li>
                             ))}
@@ -1144,7 +1143,7 @@ export default function ReviewPage() {
             </div>
           </div>
 
-          <Link href="/" className="mt-6 inline-block text-sm font-bold" style={{ color: "#C05800" }}>
+          <Link href="/" className="mt-6 inline-block text-sm font-bold" style={{ color: "#6C720C" }}>
             ← Back to Setup
           </Link>
         </div>
@@ -1153,11 +1152,11 @@ export default function ReviewPage() {
         <div className="hidden lg:block w-56 shrink-0">
           <div
             className="sticky top-6 rounded-[20px] p-4"
-            style={{ background: "#713600", border: "2px solid #C09050" }}
+            style={{ background: "#13110E", border: "2px solid #451A2D" }}
           >
             <p
               className="text-[0.65rem] font-extrabold uppercase tracking-[0.2em] mb-3"
-              style={{ color: "#C09050" }}
+              style={{ color: "#451A2D" }}
             >
               Running Total
             </p>
@@ -1174,12 +1173,12 @@ export default function ReviewPage() {
                       />
                       <span
                         className="text-sm font-semibold truncate"
-                        style={{ color: "#FDFBD4" }}
+                        style={{ color: "#F1E4E6" }}
                       >
                         {name}
                       </span>
                     </div>
-                    <span className="text-sm font-extrabold shrink-0" style={{ color: "#FDFBD4" }}>
+                    <span className="text-sm font-extrabold shrink-0" style={{ color: "#F1E4E6" }}>
                       {formatCurrency(bp.grandTotal)}
                     </span>
                   </div>
@@ -1188,10 +1187,10 @@ export default function ReviewPage() {
             </div>
             <div
               className="mt-3 pt-3 flex items-center justify-between"
-              style={{ borderTop: "1px solid #C09050" }}
+              style={{ borderTop: "1px solid #451A2D" }}
             >
-              <span className="text-xs font-bold" style={{ color: "#C09050" }}>Grand total</span>
-              <span className="text-sm font-extrabold" style={{ color: "#FDFBD4" }}>
+              <span className="text-xs font-bold" style={{ color: "#451A2D" }}>Grand total</span>
+              <span className="text-sm font-extrabold" style={{ color: "#F1E4E6" }}>
                 {formatCurrency(
                   Object.values(splitResults.perPerson).reduce((s, b) => s + b.grandTotal, 0)
                 )}
@@ -1205,8 +1204,8 @@ export default function ReviewPage() {
       <div
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
         style={{
-          background: "#713600",
-          borderTop: "2px solid #C09050",
+          background: "#13110E",
+          borderTop: "2px solid #451A2D",
         }}
       >
         <div className="flex overflow-x-auto gap-5 px-5 py-2.5">
@@ -1217,11 +1216,11 @@ export default function ReviewPage() {
               <div key={name} className="shrink-0 text-center">
                 <div className="flex items-center gap-1 justify-center">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
-                  <span className="text-[0.68rem] font-semibold" style={{ color: "#FDFBD4", opacity: 0.8 }}>
+                  <span className="text-[0.68rem] font-semibold" style={{ color: "#F1E4E6", opacity: 0.8 }}>
                     {name}
                   </span>
                 </div>
-                <div className="text-sm font-extrabold" style={{ color: "#FDFBD4" }}>
+                <div className="text-sm font-extrabold" style={{ color: "#F1E4E6" }}>
                   {formatCurrency(bp.grandTotal)}
                 </div>
               </div>

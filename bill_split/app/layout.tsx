@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,14 +15,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-brand-bg text-brand-text">
-        <header className="w-full border-b-2 border-brand-border" style={{ backgroundColor: "#713600" }}>
+        <header className="w-full border-b-2 border-brand-border" style={{ backgroundColor: "#13110E" }}>
           <div className="mx-auto max-w-5xl px-6 py-4 flex items-center gap-3">
-            <span className="text-xl font-bold" style={{ color: "#FDFBD4" }}>
+            <Link href="/" className="text-xl font-bold" style={{ color: "#F1E4E6" }}>
               MoneySplit
-            </span>
+            </Link>
             <span
               className="text-[0.65rem] font-bold uppercase tracking-widest rounded-full px-2 py-0.5"
-              style={{ color: "#FDFBD4", backgroundColor: "#C05800" }}
+              style={{ color: "#0D0B02", backgroundColor: "#6C720C" }}
             >
               beta
             </span>
