@@ -1,7 +1,7 @@
-fastapi
-uvicorn
-python-multipart
-Pillow
-pypdfium2
-rapidocr-onnxruntime
-numpy
+fastapi==0.141.1
+uvicorn==0.52.4
+python-multipart==0.0.32
+Pillow==12.3.0
+pypdfium2==5.13.0
+rapidocr-onnxruntime==1.4.4
+numpy==2.2.6
