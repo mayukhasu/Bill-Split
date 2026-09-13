@@ -1,0 +1,894 @@
+/* ─── Page shell ────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 20px 48px rgba(56, 36, 13, 0.10);
+  padding: 2rem;
+  border: 1px solid #D4B080;
+}
+
+/* ─── Header text ────────────────────────────────────────────────── */
+.stepLabel {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #C05800;
+}
+
+.title {
+  margin-top: 0.5rem;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #713600;
+}
+
+.description {
+  margin-top: 0.8rem;
+  max-width: 680px;
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: #7A5030;
+}
+
+/* ─── Section divider ────────────────────────────────────────────── */
+.sectionDivider {
+  border: none;
+  border-top: 1.5px solid #D4B080;
+  margin: 1.75rem 0;
+}
+
+/* ─── Section chrome ─────────────────────────────────────────────── */
+.sectionHeader {
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #713600;
+}
+
+.sectionText {
+  margin-top: 0.3rem;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: #7A5030;
+}
+
+/* ─── Participant section ─────────────────────────────────────────── */
+.participantSection {
+  margin-top: 0;
+}
+
+.participantList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.participantRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.inputGroup {
+  flex: 1;
+}
+
+.inputLabel {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7A5030;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid #C09050;
+  border-radius: 12px;
+  background: #FDFBD4;
+  color: #38240D;
+  font-size: 0.97rem;
+  transition: border-color 0.15s;
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: #C05800;
+}
+
+.deleteButton {
+  border: none;
+  border-radius: 12px;
+  background: #fca5a5;
+  color: #7f1d1d;
+  padding: 0.8rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: #f87171;
+}
+
+.deleteButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.addButton {
+  width: 100%;
+  margin-top: 0.85rem;
+  border: 1.5px dashed #C09050;
+  border-radius: 12px;
+  background: transparent;
+  color: #713600;
+  padding: 0.85rem 1rem;
+  font-size: 0.97rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.addButton:hover {
+  background: #F5F2C0;
+  border-color: #C05800;
+}
+
+/* ─── PDF section ────────────────────────────────────────────────── */
+.pdfSection {
+  margin-top: 0;
+}
+
+/* ─── Drop zone ──────────────────────────────────────────────────── */
+.dropZone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2.5rem 1.5rem;
+  border: 2px dashed #C09050;
+  border-radius: 20px;
+  background: #FDFBD4;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.dropZone:hover {
+  border-color: #C05800;
+  background: #F5F2C0;
+}
+
+.dropZoneActive {
+  border-color: #C05800;
+  background: #F5F2C0;
+  box-shadow: 0 0 0 4px rgba(192, 88, 0, 0.12);
+}
+
+.dropZoneIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.dropZoneText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #713600;
+}
+
+.dropZoneTextHighlight {
+  text-decoration: underline;
+  text-decoration-color: #C05800;
+  text-underline-offset: 2px;
+}
+
+.dropZoneHint {
+  font-size: 0.82rem;
+  color: #7A5030;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* ─── Selected file row ──────────────────────────────────────────── */
+.selectedFileRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.85rem;
+  font-size: 0.93rem;
+  color: #38240D;
+}
+
+.selectedFileLabel {
+  font-weight: 700;
+  color: #713600;
+}
+
+.selectedFileValue {
+  word-break: break-word;
+  color: #7A5030;
+}
+
+/* ─── Status card ────────────────────────────────────────────────── */
+.statusCard {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid #D4B080;
+  border-radius: 14px;
+  background: #F5F2C0;
+}
+
+.statusText {
+  font-size: 0.92rem;
+  color: #38240D;
+  white-space: pre-wrap;
+}
+
+.statusMeta {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #C05800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Preview / region selector ──────────────────────────────────── */
+.previewSection {
+  margin-top: 1rem;
+}
+
+/* ─── Guided mode banner ─────────────────────────────────────────── */
+.guidedBanner {
+  margin-bottom: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 18px;
+  border: 2px solid #C05800;
+  background: #FFF8EE;
+}
+
+.guidedProgress {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #C05800;
+}
+
+.guidedTitle {
+  margin-top: 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #713600;
+}
+
+.guidedDescription {
+  margin-top: 0.25rem;
+  font-size: 0.88rem;
+  color: #7A5030;
+  line-height: 1.5;
+}
+
+.guidedActions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.guidedSkipButton {
+  border: 1.5px solid #C09050;
+  border-radius: 10px;
+  background: white;
+  color: #713600;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.guidedSkipButton:hover {
+  background: #F5F2C0;
+}
+
+.guidedExitButton {
+  border: none;
+  background: none;
+  color: #7A5030;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.startGuidedButton {
+  width: 100%;
+  margin-bottom: 1rem;
+  border: 2px solid #C05800;
+  border-radius: 14px;
+  background: #FFF8EE;
+  color: #713600;
+  padding: 0.85rem 1rem;
+  font-size: 0.97rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.startGuidedButton:hover {
+  background: #F5E8D0;
+}
+
+/* ─── Selection toolbar ──────────────────────────────────────────── */
+.selectionControls {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.selectionModeButton {
+  border: 1.5px solid #C09050;
+  border-radius: 999px;
+  background: white;
+  color: #713600;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.selectionModeButton:hover {
+  background: #F5F2C0;
+  border-color: #C05800;
+}
+
+.selectionModeButtonActive {
+  border-color: #713600;
+  background: #713600;
+  color: #FDFBD4;
+}
+
+/* ─── Selection legend ───────────────────────────────────────────── */
+.selectionLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.selectionLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #7A5030;
+}
+
+.selectionSwatch {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Preview canvas ─────────────────────────────────────────────── */
+.previewCanvas {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  max-height: 72vh;
+  margin: 0 auto;
+  border: 1.5px solid #C09050;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f8f8f0;
+  cursor: crosshair;
+}
+
+.previewImage {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 72vh;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+}
+
+.selectedBox {
+  position: absolute;
+  border-radius: 8px;
+  touch-action: none;
+}
+
+.draftBox {
+  position: absolute;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.boxLabel {
+  position: absolute;
+  top: -1.65rem;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(56, 36, 13, 0.85);
+  color: #FDFBD4;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+/* Sits above the box instead of over the receipt text, and only shows up when you're
+   actually working with that box — hovering it, or it's the active toolbar selection. */
+.selectedBox:hover .boxLabel,
+.selectedBoxActive .boxLabel {
+  opacity: 1;
+}
+
+.draftBox .boxLabel {
+  opacity: 1;
+}
+
+/* Used instead of the default above-box position when the box sits too close to the
+   top of the canvas for the label to fit without being clipped. */
+.boxLabelBelow {
+  top: auto;
+  bottom: -1.65rem;
+}
+
+.resizeHandle {
+  position: absolute;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid white;
+  border-radius: 999px;
+  background: rgba(56, 36, 13, 0.9);
+  padding: 0;
+}
+
+.handleNw { top: -0.42rem; left: -0.42rem; cursor: nwse-resize; }
+.handleNe { top: -0.42rem; right: -0.42rem; cursor: nesw-resize; }
+.handleSw { bottom: -0.42rem; left: -0.42rem; cursor: nesw-resize; }
+.handleSe { right: -0.42rem; bottom: -0.42rem; cursor: nwse-resize; }
+
+/* ─── Apply button ───────────────────────────────────────────────── */
+.applySelectionButton {
+  width: 100%;
+  margin-top: 0.85rem;
+  border: none;
+  border-radius: 14px;
+  background: #C05800;
+  color: #FDFBD4;
+  padding: 0.9rem 1rem;
+  font-size: 0.97rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.applySelectionButton:hover:not(:disabled) {
+  background: #9A4600;
+}
+
+.applySelectionButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Raw text toggle ────────────────────────────────────────────── */
+.rawTextSection {
+  margin-top: 1rem;
+}
+
+.rawTextToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1.5px solid #C09050;
+  border-radius: 10px;
+  background: transparent;
+  color: #713600;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rawTextToggle:hover {
+  background: #F5F2C0;
+}
+
+.rawTextBody {
+  margin-top: 0.75rem;
+}
+
+.scannedTextContainer {
+  padding: 0.9rem 1rem;
+  background: #F5F2C0;
+  border: 1px solid #D4B080;
+  border-radius: 12px;
+}
+
+.scannedTextTitle {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #713600;
+  margin-bottom: 0.5rem;
+}
+
+.scannedText {
+  font-size: 0.82rem;
+  color: #38240D;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+/* ─── Lines / detected rows cards ───────────────────────────────── */
+.linesCard {
+  margin-top: 0.75rem;
+  border: 1px solid #D4B080;
+  border-radius: 16px;
+  background: #FDFBD4;
+  padding: 0.9rem 1rem;
+}
+
+.linesTitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C05800;
+}
+
+.linesList {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.lineItem {
+  display: grid;
+  grid-template-columns: 1.8rem 1fr;
+  gap: 0.7rem;
+  align-items: start;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #38240D;
+}
+
+.lineNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  background: #713600;
+  color: #FDFBD4;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ─── Detected rows: split screen (editable list + persistent receipt) ── */
+.detectedRowsSplit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: start;
+}
+
+.detectedRowsPane {
+  border: 1px solid #D4B080;
+  border-radius: 16px;
+  background: #FDFBD4;
+  padding: 0.9rem 1rem;
+}
+
+/* Keeps the receipt visible alongside the row list while you scroll through a long bill. */
+.detectedRowsStickyPane {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+@media (max-width: 720px) {
+  .detectedRowsStickyPane {
+    position: static;
+    max-height: none;
+  }
+}
+
+.detectedRowsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.editRowsButton {
+  border: 1.5px solid #C09050;
+  border-radius: 999px;
+  background: white;
+  color: #713600;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.editRowsButton:hover {
+  background: #F5E8D0;
+}
+
+.editRowsButtonActive {
+  background: #713600;
+  border-color: #713600;
+  color: #FDFBD4;
+}
+
+.editableRowsList {
+  margin-top: 0.7rem;
+  padding: 0;
+  list-style: none;
+}
+
+.insertRowGap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0.9rem;
+}
+
+.insertRowButton {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  border: 1.5px solid #C09050;
+  background: white;
+  color: #713600;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.insertRowGap:hover .insertRowButton,
+.insertRowButton:focus-visible {
+  opacity: 1;
+}
+
+.editableRowItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.3rem;
+  border-radius: 10px;
+  transition: opacity 0.15s;
+}
+
+.editableRowItemDragging {
+  opacity: 0.4;
+}
+
+.rowDragHandle {
+  color: #C09050;
+  font-size: 1rem;
+  user-select: none;
+  cursor: grab;
+}
+
+.rowFieldInput {
+  border: 1.5px solid #C09050;
+  border-radius: 8px;
+  background: white;
+  color: #38240D;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.3rem 0.45rem;
+}
+
+.rowNameInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowNumberInput {
+  width: 4.2rem;
+  text-align: center;
+}
+
+.rowRemoveButton {
+  border: none;
+  background: transparent;
+  color: #b91c1c;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0.1rem 0.35rem;
+}
+
+.addRowButton {
+  margin-top: 0.5rem;
+  width: 100%;
+  border: 1.5px dashed #C09050;
+  border-radius: 10px;
+  background: transparent;
+  color: #713600;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.addRowButton:hover {
+  background: #F5E8D0;
+}
+
+.scratchpadControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.scratchpadClearButton {
+  border: 1.5px solid #C09050;
+  border-radius: 999px;
+  background: white;
+  color: #713600;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.scratchpadClearButton:hover {
+  background: #F5E8D0;
+}
+
+.scratchpadWrapper {
+  position: relative;
+  width: 100%;
+  border: 1.5px solid #C09050;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f8f0;
+}
+
+.scratchpadImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.scratchpadCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.pageMiniTabs {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.pageMiniTab {
+  border: 1.5px solid #C09050;
+  border-radius: 999px;
+  background: white;
+  color: #713600;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pageMiniTabActive {
+  background: #713600;
+  border-color: #713600;
+  color: #FDFBD4;
+}
+
+@media (max-width: 720px) {
+  .detectedRowsSplit {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Next button ────────────────────────────────────────────────── */
+.nextButton {
+  width: 100%;
+  margin-top: 1.5rem;
+  border: none;
+  border-radius: 16px;
+  background: #C05800;
+  color: #FDFBD4;
+  padding: 1rem 1rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.nextButton:hover:not(:disabled) {
+  background: #9A4600;
+}
+
+.nextButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .card {
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+
+  .title {
+    font-size: 1.65rem;
+  }
+
+  .participantRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .deleteButton {
+    width: 100%;
+    text-align: center;
+  }
+}

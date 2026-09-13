@@ -1,0 +1,16 @@
+# Python (backend)
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+**/.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Personal receipt files used for local testing — not for version control
+/*.pdf
