@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MoneySplit — Frontend
 
-## Getting Started
+The web UI for MoneySplit: scan a receipt, mark which columns are the item names and prices, assign items to whoever ordered them, and see what everyone owes (including tax and tip).
 
-First, run the development server:
+Built with [Next.js](https://nextjs.org) (App Router) and TypeScript. This is the frontend half of the app — it talks to a separate FastAPI + RapidOCR backend (in `../backend`) that does the actual receipt scanning. Both need to be running for the app to work.
+
+## How it works
+
+1. **Set up your split** (`/`) — add participants, then upload a PDF or photo of a receipt. Draw boxes around the item-name column and the price column (and optionally tax/tip/fees/misc/total); the backend reads whatever falls inside each box. For multi-page receipts, mark each page separately.
+2. Detected rows show up in an editable list next to a live view of the receipt — fix a misread name, drag rows to reorder them, or insert one the scan missed.
+3. **Assign & split** (`/review`) — tap a name on each item, or use "Everyone" for shared charges. Tax and tip get distributed proportionally to what each person ordered (or split evenly, your choice).
+
+## Running locally
+
+The backend needs to be running too — see `backend/` at the repo root (FastAPI + RapidOCR, `python3 app.py`, listens on port 5001 by default).
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). By default this expects the backend at `http://127.0.0.1:5001` — override with `NEXT_PUBLIC_BACKEND_URL` if it's running elsewhere.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Purpose | Default |
+|---|---|---|
+| `NEXT_PUBLIC_BACKEND_URL` | Base URL of the FastAPI backend | `http://127.0.0.1:5001` |
 
-## Learn More
+This is a `NEXT_PUBLIC_*` variable, so Next.js inlines it at **build time** — when deploying, set it in the hosting platform's environment variables before building, not just in a local `.env` file.
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployed as a standard Next.js app (e.g. on Vercel, with this directory — `bill_split` — set as the project's root directory). The backend is deployed separately (see `render.yaml` at the repo root) since it needs Python/OCR dependencies that don't fit Vercel's serverless functions.
