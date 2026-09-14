@@ -233,9 +233,12 @@ export default function Home() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [guidedStep, setGuidedStep] = useState<number | null>(null);
   const [showRawText, setShowRawText] = useState(false);
+  const [isFullscreenDrawing, setIsFullscreenDrawing] = useState(false);
 
   const [isEditingRows, setIsEditingRows] = useState(false);
   const [draggedRowId, setDraggedRowId] = useState<string | null>(null);
+  const [dragOverRowId, setDragOverRowId] = useState<string | null>(null);
+  const rowRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [receiptPanePage, setReceiptPanePage] = useState(0);
   const [receiptComposite, setReceiptComposite] = useState<string | null>(null);
   const scratchCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -583,17 +586,41 @@ export default function Home() {
 
   const addDetectedRow = () => insertDetectedRowAt(itemRows?.length ?? 0);
 
-  const handleRowDragStart = (rowId: string) => setDraggedRowId(rowId);
-
-  const handleRowDragOver = (event: React.DragEvent) => {
+  // Native HTML5 drag-and-drop (draggable/onDragStart/onDrop) never fires on touch devices
+  // at all, so reordering rows is built on Pointer Events instead — same unification trick
+  // as the receipt box-drawing. Pointer capture on the handle is what makes this work: it
+  // keeps pointermove/pointerup firing on the handle regardless of where the finger/cursor
+  // physically ends up, so the row-under-the-pointer has to be found by comparing clientY
+  // against each row's live position rather than relying on native dragover/drop targeting.
+  const handleRowPointerDown = (event: React.PointerEvent<HTMLSpanElement>, rowId: string) => {
     event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDraggedRowId(rowId);
+    setDragOverRowId(null);
   };
 
-  const handleRowDrop = (targetId: string) => {
+  const handleRowPointerMove = (event: React.PointerEvent<HTMLSpanElement>) => {
+    if (!draggedRowId) return;
+    let closestId: string | null = null;
+    let closestDistance = Infinity;
+    for (const row of itemRows ?? []) {
+      const el = rowRefs.current.get(row.id);
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      const distance = Math.abs(event.clientY - (rect.top + rect.height / 2));
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestId = row.id;
+      }
+    }
+    setDragOverRowId(closestId && closestId !== draggedRowId ? closestId : null);
+  };
+
+  const handleRowPointerUp = () => {
     setItemRows((rows) => {
       const list = rows ?? [];
       const fromIndex = list.findIndex((row) => row.id === draggedRowId);
-      const toIndex = list.findIndex((row) => row.id === targetId);
+      const toIndex = list.findIndex((row) => row.id === dragOverRowId);
       if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return rows;
       const next = [...list];
       const [moved] = next.splice(fromIndex, 1);
@@ -601,9 +628,8 @@ export default function Home() {
       return next;
     });
     setDraggedRowId(null);
+    setDragOverRowId(null);
   };
-
-  const handleRowDragEnd = () => setDraggedRowId(null);
 
   const clearScratchpad = () => {
     const canvas = scratchCanvasRef.current;
@@ -618,6 +644,17 @@ export default function Home() {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
   };
+
+  // Lock background scroll while the fullscreen drawing overlay is open, so touch-dragging
+  // near the top/bottom edge of the canvas can't also scroll the page underneath it.
+  useEffect(() => {
+    if (!isFullscreenDrawing) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isFullscreenDrawing]);
 
   // Build a side-by-side crop of just the item-name and price columns the user marked,
   // rather than showing the whole receipt page — that's what stays visible while editing rows.
@@ -731,6 +768,211 @@ export default function Home() {
     );
     router.push("/review");
   };
+
+  // Shared between the normal inline layout and the mobile fullscreen overlay — same state,
+  // same handlers, just rendered in a different container so drawing works identically in
+  // both places instead of maintaining two copies of this logic.
+  const renderRegionSelectorBody = (fullscreen: boolean) => (
+    <>
+      {/* Page switcher — only shown for multi-page PDFs */}
+      {previewPages.length > 1 && (
+        <div className={styles.selectionControls}>
+          {previewPages.map((_, pageIndex) => {
+            const pageRegions = selectedRegions[pageIndex];
+            const hasAnyRegion = pageRegions && Object.values(pageRegions).some(Boolean);
+            return (
+              <button
+                key={pageIndex}
+                type="button"
+                onClick={() => switchToPage(pageIndex)}
+                className={`${styles.selectionModeButton} ${
+                  activePage === pageIndex ? styles.selectionModeButtonActive : ""
+                }`}
+              >
+                Page {pageIndex + 1}{hasAnyRegion ? " ✓" : ""}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Guided mode banner */}
+      {guidedStep !== null ? (
+        <div className={styles.guidedBanner}>
+          <p className={styles.guidedProgress}>
+            Step {guidedStep + 1} of {GUIDED_STEPS.length}
+            {!GUIDED_STEPS[guidedStep].required && " · optional"}
+          </p>
+          <h4 className={styles.guidedTitle}>
+            Draw: {GUIDED_STEPS[guidedStep].label}
+            {previewPages.length > 1 ? ` (page ${activePage + 1})` : ""}
+          </h4>
+          <p className={styles.guidedDescription}>
+            {GUIDED_STEPS[guidedStep].description}
+          </p>
+          <div className={styles.guidedActions}>
+            {!GUIDED_STEPS[guidedStep].required && (
+              <button
+                type="button"
+                onClick={advanceGuidedStep}
+                className={styles.guidedSkipButton}
+              >
+                Skip this step ▶
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setGuidedStep(null)}
+              className={styles.guidedExitButton}
+            >
+              Exit guided mode
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={startGuidedMode}
+          className={styles.startGuidedButton}
+        >
+          ✦ Start guided setup
+        </button>
+      )}
+
+      {/* Manual mode toolbar (hidden during guided steps) */}
+      {guidedStep === null && (
+        <div className={styles.selectionControls}>
+          {SELECTION_OPTIONS.map((option) => (
+            <button
+              key={option.key}
+              type="button"
+              onClick={() => setSelectionTarget(option.key)}
+              className={`${styles.selectionModeButton} ${
+                selectionTarget === option.key ? styles.selectionModeButtonActive : ""
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Legend — reflects the currently active page */}
+      <div className={styles.selectionLegend}>
+        {SELECTION_OPTIONS.map((option) => (
+          <span key={option.key} className={styles.selectionLegendItem}>
+            <span
+              className={styles.selectionSwatch}
+              style={{ background: option.color }}
+            />
+            {option.label}{" "}
+            {activePageRegions[option.key] ? (
+              <strong style={{ color: option.color }}>✓</strong>
+            ) : (
+              <span style={{ opacity: 0.5 }}>—</span>
+            )}
+          </span>
+        ))}
+      </div>
+
+      {/* Canvas */}
+      {activePreviewPage && (
+        <div
+          ref={previewContainerRef}
+          className={`${styles.previewCanvas} ${fullscreen ? styles.previewCanvasFullscreen : ""}`}
+          onPointerDown={handlePreviewPointerDown}
+          onPointerMove={handlePreviewPointerMove}
+          onPointerUp={handlePreviewPointerUp}
+          onPointerCancel={() => {
+            setDraftBox(null);
+            setBoxInteraction(null);
+          }}
+          onPointerLeave={() => {
+            setDraftBox(null);
+            setBoxInteraction(null);
+          }}
+        >
+          <img
+            src={`data:image/png;base64,${activePreviewPage.imageBase64}`}
+            alt={`Receipt preview — page ${activePage + 1}`}
+            className={`${styles.previewImage} ${fullscreen ? styles.previewImageFullscreen : ""}`}
+            draggable={false}
+          />
+
+          {SELECTION_OPTIONS.map((option) => {
+            const region = activePageRegions[option.key];
+            if (!region) return null;
+            return (
+              <div
+                key={option.key}
+                className={`${styles.selectedBox} ${
+                  selectionTarget === option.key || boxInteraction?.target === option.key
+                    ? styles.selectedBoxActive
+                    : ""
+                }`}
+                onPointerDown={(e) => handleBoxPointerDown(e, option.key)}
+                style={{
+                  left: `${region.x * 100}%`,
+                  top: `${region.y * 100}%`,
+                  width: `${region.width * 100}%`,
+                  height: `${region.height * 100}%`,
+                  border: `2px solid ${option.color}`,
+                  background: `${option.color}28`,
+                  cursor: "move",
+                }}
+              >
+                <span
+                  className={`${styles.boxLabel} ${region.y < 0.08 ? styles.boxLabelBelow : ""}`}
+                >
+                  {option.label}
+                </span>
+                {(["nw", "ne", "sw", "se"] as ResizeHandle[]).map((handle) => (
+                  <button
+                    key={handle}
+                    type="button"
+                    className={`${styles.resizeHandle} ${styles[`handle${handle.charAt(0).toUpperCase()}${handle.charAt(1)}` as keyof typeof styles]}`}
+                    onPointerDown={(e) => handleResizePointerDown(e, option.key, handle)}
+                    aria-label={`Resize ${option.label}`}
+                  />
+                ))}
+              </div>
+            );
+          })}
+
+          {draftBox && (
+            <div
+              className={styles.draftBox}
+              style={{
+                left: `${Math.min(draftBox.startX, draftBox.currentX)}px`,
+                top: `${Math.min(draftBox.startY, draftBox.currentY)}px`,
+                width: `${Math.abs(draftBox.currentX - draftBox.startX)}px`,
+                height: `${Math.abs(draftBox.currentY - draftBox.startY)}px`,
+                border: `2px dashed ${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}`,
+                background: `${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}22`,
+              }}
+            >
+              <span
+                className={`${styles.boxLabel} ${
+                  Math.min(draftBox.startY, draftBox.currentY) < 40 ? styles.boxLabelBelow : ""
+                }`}
+              >
+                {SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.label ?? "Selection"}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={applySelectedColumns}
+        disabled={!hasCompletePage || !selectedFile || isApplyingSelection}
+        className={styles.applySelectionButton}
+      >
+        {isApplyingSelection ? "Applying…" : "Apply Selected Regions"}
+      </button>
+    </>
+  );
 
   return (
     <main className={styles.container}>
@@ -849,203 +1091,41 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Page switcher — only shown for multi-page PDFs */}
-              {previewPages.length > 1 && (
-                <div className={styles.selectionControls}>
-                  {previewPages.map((_, pageIndex) => {
-                    const pageRegions = selectedRegions[pageIndex];
-                    const hasAnyRegion = pageRegions && Object.values(pageRegions).some(Boolean);
-                    return (
-                      <button
-                        key={pageIndex}
-                        type="button"
-                        onClick={() => switchToPage(pageIndex)}
-                        className={`${styles.selectionModeButton} ${
-                          activePage === pageIndex ? styles.selectionModeButtonActive : ""
-                        }`}
-                      >
-                        Page {pageIndex + 1}{hasAnyRegion ? " ✓" : ""}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Guided mode banner */}
-              {guidedStep !== null ? (
-                <div className={styles.guidedBanner}>
-                  <p className={styles.guidedProgress}>
-                    Step {guidedStep + 1} of {GUIDED_STEPS.length}
-                    {!GUIDED_STEPS[guidedStep].required && " · optional"}
-                  </p>
-                  <h4 className={styles.guidedTitle}>
-                    Draw: {GUIDED_STEPS[guidedStep].label}
-                    {previewPages.length > 1 ? ` (page ${activePage + 1})` : ""}
-                  </h4>
-                  <p className={styles.guidedDescription}>
-                    {GUIDED_STEPS[guidedStep].description}
-                  </p>
-                  <div className={styles.guidedActions}>
-                    {!GUIDED_STEPS[guidedStep].required && (
-                      <button
-                        type="button"
-                        onClick={advanceGuidedStep}
-                        className={styles.guidedSkipButton}
-                      >
-                        Skip this step ▶
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setGuidedStep(null)}
-                      className={styles.guidedExitButton}
-                    >
-                      Exit guided mode
-                    </button>
-                  </div>
-                </div>
+              {isFullscreenDrawing ? (
+                <p className={styles.fullscreenActiveHint}>
+                  Drawing in fullscreen — tap Done above to come back here.
+                </p>
               ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsFullscreenDrawing(true)}
+                    className={styles.fullscreenToggleButton}
+                  >
+                    ⛶ Draw fullscreen
+                  </button>
+                  {renderRegionSelectorBody(false)}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Mobile-friendly fullscreen drawing mode — same state and handlers as above,
+              just rendered bigger so precise box-drawing on a small phone screen is actually
+              usable. Exiting keeps whatever was drawn, since it's the same underlying state. */}
+          {isFullscreenDrawing && (
+            <div className={styles.fullscreenOverlay}>
+              <div className={styles.fullscreenHeader}>
+                <span className={styles.fullscreenHeaderTitle}>Mark Regions</span>
                 <button
                   type="button"
-                  onClick={startGuidedMode}
-                  className={styles.startGuidedButton}
+                  onClick={() => setIsFullscreenDrawing(false)}
+                  className={styles.fullscreenExitButton}
                 >
-                  ✦ Start guided setup
+                  ✕ Done
                 </button>
-              )}
-
-              {/* Manual mode toolbar (hidden during guided steps) */}
-              {guidedStep === null && (
-                <div className={styles.selectionControls}>
-                  {SELECTION_OPTIONS.map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      onClick={() => setSelectionTarget(option.key)}
-                      className={`${styles.selectionModeButton} ${
-                        selectionTarget === option.key ? styles.selectionModeButtonActive : ""
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Legend — reflects the currently active page */}
-              <div className={styles.selectionLegend}>
-                {SELECTION_OPTIONS.map((option) => (
-                  <span key={option.key} className={styles.selectionLegendItem}>
-                    <span
-                      className={styles.selectionSwatch}
-                      style={{ background: option.color }}
-                    />
-                    {option.label}{" "}
-                    {activePageRegions[option.key] ? (
-                      <strong style={{ color: option.color }}>✓</strong>
-                    ) : (
-                      <span style={{ opacity: 0.5 }}>—</span>
-                    )}
-                  </span>
-                ))}
               </div>
-
-              {/* Canvas */}
-              {activePreviewPage && (
-                <div
-                  ref={previewContainerRef}
-                  className={styles.previewCanvas}
-                  onPointerDown={handlePreviewPointerDown}
-                  onPointerMove={handlePreviewPointerMove}
-                  onPointerUp={handlePreviewPointerUp}
-                  onPointerCancel={() => {
-                    setDraftBox(null);
-                    setBoxInteraction(null);
-                  }}
-                  onPointerLeave={() => {
-                    setDraftBox(null);
-                    setBoxInteraction(null);
-                  }}
-                >
-                  <img
-                    src={`data:image/png;base64,${activePreviewPage.imageBase64}`}
-                    alt={`Receipt preview — page ${activePage + 1}`}
-                    className={styles.previewImage}
-                    draggable={false}
-                  />
-
-                  {SELECTION_OPTIONS.map((option) => {
-                    const region = activePageRegions[option.key];
-                    if (!region) return null;
-                    return (
-                      <div
-                        key={option.key}
-                        className={`${styles.selectedBox} ${
-                          selectionTarget === option.key || boxInteraction?.target === option.key
-                            ? styles.selectedBoxActive
-                            : ""
-                        }`}
-                        onPointerDown={(e) => handleBoxPointerDown(e, option.key)}
-                        style={{
-                          left: `${region.x * 100}%`,
-                          top: `${region.y * 100}%`,
-                          width: `${region.width * 100}%`,
-                          height: `${region.height * 100}%`,
-                          border: `2px solid ${option.color}`,
-                          background: `${option.color}28`,
-                          cursor: "move",
-                        }}
-                      >
-                        <span
-                          className={`${styles.boxLabel} ${region.y < 0.08 ? styles.boxLabelBelow : ""}`}
-                        >
-                          {option.label}
-                        </span>
-                        {(["nw", "ne", "sw", "se"] as ResizeHandle[]).map((handle) => (
-                          <button
-                            key={handle}
-                            type="button"
-                            className={`${styles.resizeHandle} ${styles[`handle${handle.charAt(0).toUpperCase()}${handle.charAt(1)}` as keyof typeof styles]}`}
-                            onPointerDown={(e) => handleResizePointerDown(e, option.key, handle)}
-                            aria-label={`Resize ${option.label}`}
-                          />
-                        ))}
-                      </div>
-                    );
-                  })}
-
-                  {draftBox && (
-                    <div
-                      className={styles.draftBox}
-                      style={{
-                        left: `${Math.min(draftBox.startX, draftBox.currentX)}px`,
-                        top: `${Math.min(draftBox.startY, draftBox.currentY)}px`,
-                        width: `${Math.abs(draftBox.currentX - draftBox.startX)}px`,
-                        height: `${Math.abs(draftBox.currentY - draftBox.startY)}px`,
-                        border: `2px dashed ${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}`,
-                        background: `${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}22`,
-                      }}
-                    >
-                      <span
-                        className={`${styles.boxLabel} ${
-                          Math.min(draftBox.startY, draftBox.currentY) < 40 ? styles.boxLabelBelow : ""
-                        }`}
-                      >
-                        {SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.label ?? "Selection"}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={applySelectedColumns}
-                disabled={!hasCompletePage || !selectedFile || isApplyingSelection}
-                className={styles.applySelectionButton}
-              >
-                {isApplyingSelection ? "Applying…" : "Apply Selected Regions"}
-              </button>
+              <div className={styles.fullscreenScroll}>{renderRegionSelectorBody(true)}</div>
             </div>
           )}
 
@@ -1118,23 +1198,28 @@ export default function Home() {
                   {itemRows?.map((row, index) => (
                     <li key={row.id}>
                       <div
+                        ref={(el) => {
+                          if (el) rowRefs.current.set(row.id, el);
+                          else rowRefs.current.delete(row.id);
+                        }}
                         className={
                           isEditingRows
-                            ? `${styles.editableRowItem} ${draggedRowId === row.id ? styles.editableRowItemDragging : ""}`
+                            ? `${styles.editableRowItem} ${draggedRowId === row.id ? styles.editableRowItemDragging : ""} ${
+                                dragOverRowId === row.id ? styles.editableRowItemDragOver : ""
+                              }`
                             : styles.lineItem
                         }
-                        onDragOver={isEditingRows ? handleRowDragOver : undefined}
-                        onDrop={isEditingRows ? () => handleRowDrop(row.id) : undefined}
                       >
                         {isEditingRows ? (
                           <>
-                            {/* Only the handle itself is draggable — dragging from an <input> would just select text instead of moving the row. */}
+                            {/* Only the handle itself starts a drag — starting from an <input> would just select text instead of moving the row. */}
                             <span
                               className={styles.rowDragHandle}
                               title="Drag to reorder"
-                              draggable
-                              onDragStart={() => handleRowDragStart(row.id)}
-                              onDragEnd={handleRowDragEnd}
+                              onPointerDown={(e) => handleRowPointerDown(e, row.id)}
+                              onPointerMove={handleRowPointerMove}
+                              onPointerUp={handleRowPointerUp}
+                              onPointerCancel={handleRowPointerUp}
                             >
                               ⠿
                             </span>

@@ -421,6 +421,84 @@
   user-select: none;
 }
 
+.previewCanvasFullscreen {
+  max-height: none;
+}
+
+.previewImageFullscreen {
+  max-height: 85vh;
+}
+
+/* ─── Fullscreen drawing mode (mobile) ──────────────────────────────
+   Same region-selector content as the inline version, just rendered at
+   full viewport size so precise box-drawing works on a small phone screen. */
+.fullscreenToggleButton {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  border: 1.5px solid var(--color-input-fill);
+  border-radius: 10px;
+  background: var(--color-input-fill);
+  color: #F1E4E6;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.fullscreenToggleButton:hover {
+  background: var(--color-input-fill-focus);
+  border-color: var(--color-input-fill-focus);
+}
+
+.fullscreenActiveHint {
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #C9A3AF;
+}
+
+.fullscreenOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: #070403;
+}
+
+.fullscreenHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border-bottom: 1.5px solid #451A2D;
+  background: #13110E;
+}
+
+.fullscreenHeaderTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #F1E4E6;
+}
+
+.fullscreenExitButton {
+  border: none;
+  border-radius: 10px;
+  background: #6C720C;
+  color: #0D0B02;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fullscreenScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
 .selectedBox {
   position: absolute;
   border-radius: 8px;
@@ -732,11 +810,19 @@
   opacity: 0.4;
 }
 
+.editableRowItemDragOver {
+  box-shadow: inset 0 2px 0 #6C720C, inset 0 -2px 0 #6C720C;
+  border-radius: 10px;
+}
+
 .rowDragHandle {
   color: #451A2D;
   font-size: 1rem;
   user-select: none;
   cursor: grab;
+  touch-action: none;
+  padding: 0.3rem;
+  margin: -0.3rem;
 }
 
 .rowFieldInput {
