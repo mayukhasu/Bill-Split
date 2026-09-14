@@ -163,6 +163,13 @@ const REVIEW_STORAGE_KEY = "moneysplit-review-data";
 // project settings (not just locally) for production builds to reach the real backend.
 const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://127.0.0.1:5001").replace(/\/+$/, "");
 
+const SUPPORTED_RECEIPT_EXTENSIONS = [".pdf", ".heic", ".heif", ".jpg", ".jpeg", ".png"];
+
+function isSupportedReceiptFile(filename: string) {
+  const lower = filename.toLowerCase();
+  return SUPPORTED_RECEIPT_EXTENSIONS.some((extension) => lower.endsWith(extension));
+}
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
@@ -286,7 +293,7 @@ export default function Home() {
         body: formData,
       });
       const data: PdfReadResponse = await response.json();
-      if (!response.ok) throw new Error(data.error ?? "Could not read the PDF.");
+      if (!response.ok) throw new Error(data.error ?? "Could not read the receipt.");
 
       setPdfText(data.text);
       setPdfLines(data.lines);
@@ -316,7 +323,7 @@ export default function Home() {
             : "Could not reach the backend. Start it with `python3 app.py` in the backend folder."
           : error instanceof Error
           ? error.message
-          : "Could not read the PDF."
+          : "Could not read the receipt."
       );
     }
   };
@@ -343,7 +350,12 @@ export default function Home() {
 
   const handleFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) await handleFileSelected(file);
+    if (!file) return;
+    if (!isSupportedReceiptFile(file.name)) {
+      setStatusMessage("Only PDF, HEIC, JPG, and PNG files are supported.");
+      return;
+    }
+    await handleFileSelected(file);
   };
 
   const handleDropZoneDragOver = (event: React.DragEvent) => {
@@ -358,8 +370,8 @@ export default function Home() {
     setIsDragOver(false);
     const file = event.dataTransfer.files?.[0];
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
-      setStatusMessage("Only PDF files are supported. Please drop a PDF.");
+    if (!isSupportedReceiptFile(file.name)) {
+      setStatusMessage("Only PDF, HEIC, JPG, and PNG files are supported.");
       return;
     }
     await handleFileSelected(file);
@@ -768,9 +780,10 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Upload Receipt</h2>
             <p className={styles.sectionText}>
-              Drop your PDF below. After the preview loads, use guided setup to mark the item and price columns.
-              For multi-page receipts, switch pages above the preview and mark each page that has items —
-              tax/tip/total only need marking on whichever page they actually appear on.
+              Drop a PDF or photo of your receipt below (PDF, HEIC, JPG, or PNG). After the preview loads, use
+              guided setup to mark the item and price columns. For multi-page receipts, switch pages above the
+              preview and mark each page that has items — tax/tip/total only need marking on whichever page they
+              actually appear on.
             </p>
           </div>
 
@@ -785,7 +798,7 @@ export default function Home() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf,application/pdf"
+              accept=".pdf,application/pdf,.heic,.heif,image/heic,image/heif,.jpg,.jpeg,image/jpeg,.png,image/png"
               onChange={handleFileInputChange}
               className={styles.hiddenInput}
               disabled={isReadingPdf}
@@ -794,9 +807,9 @@ export default function Home() {
             <p className={styles.dropZoneText}>
               {isReadingPdf
                 ? "Reading receipt…"
-                : <>Drop your PDF here, or <span className={styles.dropZoneTextHighlight}>click to browse</span></>}
+                : <>Drop your receipt here, or <span className={styles.dropZoneTextHighlight}>click to browse</span></>}
             </p>
-            <p className={styles.dropZoneHint}>PDF files only</p>
+            <p className={styles.dropZoneHint}>PDF, HEIC, JPG, or PNG</p>
           </div>
 
           {uploadedFileName && (

@@ -8,11 +8,20 @@ import numpy as np
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from PIL import Image, ImageOps
+import pillow_heif
 import pypdfium2
 from rapidocr_onnxruntime import RapidOCR
 import uvicorn
 
+# Registers HEIC/HEIF (the format iPhones save photos as) as a format Pillow's Image.open
+# can decode, the same way it already handles JPEG/PNG — nothing downstream needs to know
+# the difference between formats after this.
+pillow_heif.register_heif_opener()
+
 app = FastAPI(title="MoneySplit Backend")
+
+IMAGE_EXTENSIONS = (".heic", ".heif", ".jpg", ".jpeg", ".png")
 
 # Loaded once at process start — RapidOCR's models ship with the package (no network
 # fetch needed), and re-loading them per request would add real latency to every scan.
@@ -170,6 +179,24 @@ def extract_amount(ocr_results, region, image_width, image_height):
     # than one price, prefer the last one because totals often sit at the bottom
     # of the selected label block.
     return round(price_entries[-1]["price"], 2)
+
+
+def convert_image_to_pdf_bytes(image_bytes):
+    # Wrapping a photo in a single-page PDF, rather than teaching the rest of the pipeline
+    # a second code path, means every page-rendering/OCR function below keeps working
+    # unchanged — and Pillow's default PDF export happens to encode at 1pt=1px, which is
+    # exactly the "photo wrapped in a PDF" shape compute_render_scale was already built to
+    # handle safely (see the memory-cap comment on that function).
+    image = Image.open(BytesIO(image_bytes))
+    # Phone cameras (Android and iPhone alike) commonly store the photo in sensor
+    # orientation plus an EXIF rotation tag rather than pre-rotating the pixels — without
+    # this, a portrait photo can come back sideways.
+    image = ImageOps.exif_transpose(image)
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+    pdf_buffer = BytesIO()
+    image.save(pdf_buffer, format="PDF")
+    return pdf_buffer.getvalue()
 
 
 def compute_render_scale(page, target_long_side, min_scale=1.0, max_scale=4.0):
@@ -351,21 +378,35 @@ async def read_pdf(
     if not file.filename:
         return JSONResponse(
             status_code=400,
-            content={"error": "Please upload a PDF file."},
+            content={"error": "Please upload a PDF or photo of a receipt."},
         )
 
-    if not file.filename.lower().endswith(".pdf"):
+    filename_lower = file.filename.lower()
+    is_pdf = filename_lower.endswith(".pdf")
+    is_image = filename_lower.endswith(IMAGE_EXTENSIONS)
+    if not is_pdf and not is_image:
         return JSONResponse(
             status_code=400,
-            content={"error": "Only PDF files are supported."},
+            content={"error": "Only PDF, HEIC, JPG, and PNG files are supported."},
         )
 
-    pdf_bytes = await file.read()
-    if not pdf_bytes:
+    uploaded_bytes = await file.read()
+    if not uploaded_bytes:
         return JSONResponse(
             status_code=400,
-            content={"error": "The uploaded PDF is empty."},
+            content={"error": "The uploaded file is empty."},
         )
+
+    if is_pdf:
+        pdf_bytes = uploaded_bytes
+    else:
+        try:
+            pdf_bytes = convert_image_to_pdf_bytes(uploaded_bytes)
+        except Exception:
+            return JSONResponse(
+                status_code=400,
+                content={"error": "Could not read that image. Try a different photo or a PDF."},
+            )
 
     document = pypdfium2.PdfDocument(pdf_bytes)
     page_count = len(document)
