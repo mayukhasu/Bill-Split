@@ -31,4 +31,4 @@ This is a `NEXT_PUBLIC_*` variable, so Next.js inlines it at **build time** — 
 
 ## Deployment
 
-Deployed as a standard Next.js app (e.g. on Vercel, with this directory — `bill_split` — set as the project's root directory). The backend is deployed separately (see `render.yaml` at the repo root) since it needs Python/OCR dependencies that don't fit Vercel's serverless functions.
+Deployed as a standard Next.js app (e.g. on Vercel, with this directory — `bill_split` — set as the project's root directory). The backend is deployed separately (see the "Deployment" section in the repo root [README](../README.md)) since it needs Python/OCR dependencies that don't fit Vercel's serverless functions.
