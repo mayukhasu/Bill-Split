@@ -206,6 +206,16 @@ export default function Home() {
   const router = useRouter();
   const previewContainerRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  // Pinch-to-zoom (fullscreen drawing mode only) — tracks active touches by pointerId so a
+  // second finger touching down is recognized as "start pinching" regardless of where the
+  // first finger's drag started (main canvas, an existing box, or a resize handle).
+  const activePointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchStateRef = useRef<{
+    startDistance: number;
+    startScale: number;
+    startOffset: { x: number; y: number };
+    startMidpoint: { x: number; y: number };
+  } | null>(null);
 
   const [participants, setParticipants] = useState<Participant[]>([
     { id: 1, name: "" },
@@ -234,6 +244,8 @@ export default function Home() {
   const [guidedStep, setGuidedStep] = useState<number | null>(null);
   const [showRawText, setShowRawText] = useState(false);
   const [isFullscreenDrawing, setIsFullscreenDrawing] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomOffset, setZoomOffset] = useState({ x: 0, y: 0 });
 
   const [isEditingRows, setIsEditingRows] = useState(false);
   const [draggedRowId, setDraggedRowId] = useState<string | null>(null);
@@ -404,20 +416,89 @@ export default function Home() {
     });
   };
 
+  // Converts a screen point to the canvas's own unscaled coordinate space — i.e. undoes the
+  // pinch-zoom transform (translate then scale) so drawing/moving/resizing math never needs
+  // to know whether the user is currently zoomed in. Outside fullscreen, zoomScale is always
+  // 1 and zoomOffset always {0,0}, so this is equivalent to the old plain `clientX - rect.left`.
+  const toLocalPoint = (clientX: number, clientY: number, rect: DOMRect) => ({
+    x: (clientX - rect.left - zoomOffset.x) / zoomScale,
+    y: (clientY - rect.top - zoomOffset.y) / zoomScale,
+  });
+
+  // Registers a touch/pointer in the fullscreen pinch tracker. Returns true if this pointer
+  // just became the second (or later) active finger — callers should abandon whatever
+  // single-finger interaction (drawing, moving, resizing) they were about to start, since a
+  // pinch has begun instead.
+  const registerFullscreenPointer = (event: React.PointerEvent): boolean => {
+    if (!isFullscreenDrawing) return false;
+    activePointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (activePointersRef.current.size === 2) {
+      const [a, b] = Array.from(activePointersRef.current.values());
+      pinchStateRef.current = {
+        startDistance: Math.hypot(a.x - b.x, a.y - b.y) || 1,
+        startScale: zoomScale,
+        startOffset: zoomOffset,
+        startMidpoint: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 },
+      };
+      setDraftBox(null);
+      setBoxInteraction(null);
+      return true;
+    }
+    return activePointersRef.current.size > 2;
+  };
+
+  // Releases a bookkeeping-only fullscreen pointer (up/cancel/leave). Returns true while a
+  // multi-touch gesture is still in progress with at least one finger down, so callers can
+  // skip their normal single-finger "commit" logic (e.g. dropping a drawn box).
+  const releaseFullscreenPointer = (pointerId: number): boolean => {
+    if (!isFullscreenDrawing) return false;
+    activePointersRef.current.delete(pointerId);
+    if (activePointersRef.current.size < 2) pinchStateRef.current = null;
+    return activePointersRef.current.size > 0;
+  };
+
   const handlePreviewPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!previewContainerRef.current) return;
     event.preventDefault();
     const rect = previewContainerRef.current.getBoundingClientRect();
-    const startX = event.clientX - rect.left;
-    const startY = event.clientY - rect.top;
+    if (registerFullscreenPointer(event)) return;
+    const { x: startX, y: startY } = toLocalPoint(event.clientX, event.clientY, rect);
     setDraftBox({ startX, startY, currentX: startX, currentY: startY });
   };
 
   const handlePreviewPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!previewContainerRef.current) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
-    const currentX = clamp(event.clientX - rect.left, 0, rect.width);
-    const currentY = clamp(event.clientY - rect.top, 0, rect.height);
+
+    if (isFullscreenDrawing && activePointersRef.current.has(event.pointerId)) {
+      activePointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    }
+
+    if (isFullscreenDrawing && pinchStateRef.current && activePointersRef.current.size === 2) {
+      const [a, b] = Array.from(activePointersRef.current.values());
+      const distance = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      const midpoint = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      const pinch = pinchStateRef.current;
+      const newScale = clamp(pinch.startScale * (distance / pinch.startDistance), 1, 4);
+
+      // Keep whatever local point was originally under the fingers anchored under them as
+      // scale changes, and pan by however much the midpoint itself has moved since — this is
+      // what makes the zoom feel like it's happening "at your fingers" instead of the corner.
+      const anchorX = (pinch.startMidpoint.x - rect.left - pinch.startOffset.x) / pinch.startScale;
+      const anchorY = (pinch.startMidpoint.y - rect.top - pinch.startOffset.y) / pinch.startScale;
+      const minOffsetX = rect.width * (1 - newScale);
+      const minOffsetY = rect.height * (1 - newScale);
+      setZoomScale(newScale);
+      setZoomOffset({
+        x: clamp(midpoint.x - rect.left - anchorX * newScale, minOffsetX, 0),
+        y: clamp(midpoint.y - rect.top - anchorY * newScale, minOffsetY, 0),
+      });
+      return;
+    }
+
+    const local = toLocalPoint(event.clientX, event.clientY, rect);
+    const currentX = clamp(local.x, 0, rect.width);
+    const currentY = clamp(local.y, 0, rect.height);
 
     if (boxInteraction) {
       const deltaX = (currentX - boxInteraction.startX) / rect.width;
@@ -452,7 +533,9 @@ export default function Home() {
     setDraftBox((prev) => prev ? { ...prev, currentX, currentY } : null);
   };
 
-  const handlePreviewPointerUp = () => {
+  const handlePreviewPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (releaseFullscreenPointer(event.pointerId)) return;
+
     if (boxInteraction) {
       setBoxInteraction(null);
       return;
@@ -498,13 +581,15 @@ export default function Home() {
     event.preventDefault();
     if (!previewContainerRef.current || !activePageRegions[target]) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
+    if (registerFullscreenPointer(event)) return;
+    const { x: startX, y: startY } = toLocalPoint(event.clientX, event.clientY, rect);
     setSelectionTarget(target);
     setDraftBox(null);
     setBoxInteraction({
       target,
       mode: "move",
-      startX: event.clientX - rect.left,
-      startY: event.clientY - rect.top,
+      startX,
+      startY,
       originalRegion: activePageRegions[target]!,
     });
     const label = SELECTION_OPTIONS.find((o) => o.key === target)?.label ?? "Selection";
@@ -520,14 +605,16 @@ export default function Home() {
     event.preventDefault();
     if (!previewContainerRef.current || !activePageRegions[target]) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
+    if (registerFullscreenPointer(event)) return;
+    const { x: startX, y: startY } = toLocalPoint(event.clientX, event.clientY, rect);
     setSelectionTarget(target);
     setDraftBox(null);
     setBoxInteraction({
       target,
       mode: "resize",
       handle,
-      startX: event.clientX - rect.left,
-      startY: event.clientY - rect.top,
+      startX,
+      startY,
       originalRegion: activePageRegions[target]!,
     });
   };
@@ -654,6 +741,16 @@ export default function Home() {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
+  }, [isFullscreenDrawing]);
+
+  // Reset pinch-zoom whenever fullscreen mode is entered or exited, so it never opens
+  // already zoomed/panned from a previous session, and the normal (non-fullscreen) canvas
+  // never sees a non-identity transform.
+  useEffect(() => {
+    setZoomScale(1);
+    setZoomOffset({ x: 0, y: 0 });
+    activePointersRef.current.clear();
+    pinchStateRef.current = null;
   }, [isFullscreenDrawing]);
 
   // Build a side-by-side crop of just the item-name and price columns the user marked,
@@ -883,82 +980,103 @@ export default function Home() {
           onPointerDown={handlePreviewPointerDown}
           onPointerMove={handlePreviewPointerMove}
           onPointerUp={handlePreviewPointerUp}
-          onPointerCancel={() => {
+          onPointerCancel={(event) => {
+            releaseFullscreenPointer(event.pointerId);
             setDraftBox(null);
             setBoxInteraction(null);
           }}
-          onPointerLeave={() => {
+          onPointerLeave={(event) => {
+            releaseFullscreenPointer(event.pointerId);
             setDraftBox(null);
             setBoxInteraction(null);
           }}
         >
-          <img
-            src={`data:image/png;base64,${activePreviewPage.imageBase64}`}
-            alt={`Receipt preview — page ${activePage + 1}`}
-            className={`${styles.previewImage} ${fullscreen ? styles.previewImageFullscreen : ""}`}
-            draggable={false}
-          />
+          <div
+            className={styles.previewZoomLayer}
+            style={{ transform: `translate(${zoomOffset.x}px, ${zoomOffset.y}px) scale(${zoomScale})` }}
+          >
+            <img
+              src={`data:image/png;base64,${activePreviewPage.imageBase64}`}
+              alt={`Receipt preview — page ${activePage + 1}`}
+              className={`${styles.previewImage} ${fullscreen ? styles.previewImageFullscreen : ""}`}
+              draggable={false}
+            />
 
-          {SELECTION_OPTIONS.map((option) => {
-            const region = activePageRegions[option.key];
-            if (!region) return null;
-            return (
+            {SELECTION_OPTIONS.map((option) => {
+              const region = activePageRegions[option.key];
+              if (!region) return null;
+              return (
+                <div
+                  key={option.key}
+                  className={`${styles.selectedBox} ${
+                    selectionTarget === option.key || boxInteraction?.target === option.key
+                      ? styles.selectedBoxActive
+                      : ""
+                  }`}
+                  onPointerDown={(e) => handleBoxPointerDown(e, option.key)}
+                  style={{
+                    left: `${region.x * 100}%`,
+                    top: `${region.y * 100}%`,
+                    width: `${region.width * 100}%`,
+                    height: `${region.height * 100}%`,
+                    border: `2px solid ${option.color}`,
+                    background: `${option.color}28`,
+                    cursor: "move",
+                  }}
+                >
+                  <span
+                    className={`${styles.boxLabel} ${region.y < 0.08 ? styles.boxLabelBelow : ""}`}
+                  >
+                    {option.label}
+                  </span>
+                  {(["nw", "ne", "sw", "se"] as ResizeHandle[]).map((handle) => (
+                    <button
+                      key={handle}
+                      type="button"
+                      className={`${styles.resizeHandle} ${styles[`handle${handle.charAt(0).toUpperCase()}${handle.charAt(1)}` as keyof typeof styles]}`}
+                      onPointerDown={(e) => handleResizePointerDown(e, option.key, handle)}
+                      aria-label={`Resize ${option.label}`}
+                    />
+                  ))}
+                </div>
+              );
+            })}
+
+            {draftBox && (
               <div
-                key={option.key}
-                className={`${styles.selectedBox} ${
-                  selectionTarget === option.key || boxInteraction?.target === option.key
-                    ? styles.selectedBoxActive
-                    : ""
-                }`}
-                onPointerDown={(e) => handleBoxPointerDown(e, option.key)}
+                className={styles.draftBox}
                 style={{
-                  left: `${region.x * 100}%`,
-                  top: `${region.y * 100}%`,
-                  width: `${region.width * 100}%`,
-                  height: `${region.height * 100}%`,
-                  border: `2px solid ${option.color}`,
-                  background: `${option.color}28`,
-                  cursor: "move",
+                  left: `${Math.min(draftBox.startX, draftBox.currentX)}px`,
+                  top: `${Math.min(draftBox.startY, draftBox.currentY)}px`,
+                  width: `${Math.abs(draftBox.currentX - draftBox.startX)}px`,
+                  height: `${Math.abs(draftBox.currentY - draftBox.startY)}px`,
+                  border: `2px dashed ${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}`,
+                  background: `${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}22`,
                 }}
               >
                 <span
-                  className={`${styles.boxLabel} ${region.y < 0.08 ? styles.boxLabelBelow : ""}`}
+                  className={`${styles.boxLabel} ${
+                    Math.min(draftBox.startY, draftBox.currentY) < 40 ? styles.boxLabelBelow : ""
+                  }`}
                 >
-                  {option.label}
+                  {SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.label ?? "Selection"}
                 </span>
-                {(["nw", "ne", "sw", "se"] as ResizeHandle[]).map((handle) => (
-                  <button
-                    key={handle}
-                    type="button"
-                    className={`${styles.resizeHandle} ${styles[`handle${handle.charAt(0).toUpperCase()}${handle.charAt(1)}` as keyof typeof styles]}`}
-                    onPointerDown={(e) => handleResizePointerDown(e, option.key, handle)}
-                    aria-label={`Resize ${option.label}`}
-                  />
-                ))}
               </div>
-            );
-          })}
+            )}
+          </div>
 
-          {draftBox && (
-            <div
-              className={styles.draftBox}
-              style={{
-                left: `${Math.min(draftBox.startX, draftBox.currentX)}px`,
-                top: `${Math.min(draftBox.startY, draftBox.currentY)}px`,
-                width: `${Math.abs(draftBox.currentX - draftBox.startX)}px`,
-                height: `${Math.abs(draftBox.currentY - draftBox.startY)}px`,
-                border: `2px dashed ${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}`,
-                background: `${SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.color ?? "#6C720C"}22`,
+          {fullscreen && zoomScale > 1 && (
+            <button
+              type="button"
+              className={styles.zoomResetButton}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={() => {
+                setZoomScale(1);
+                setZoomOffset({ x: 0, y: 0 });
               }}
             >
-              <span
-                className={`${styles.boxLabel} ${
-                  Math.min(draftBox.startY, draftBox.currentY) < 40 ? styles.boxLabelBelow : ""
-                }`}
-              >
-                {SELECTION_OPTIONS.find((o) => o.key === selectionTarget)?.label ?? "Selection"}
-              </span>
-            </div>
+              {Math.round(zoomScale * 100)}% · Reset
+            </button>
           )}
         </div>
       )}

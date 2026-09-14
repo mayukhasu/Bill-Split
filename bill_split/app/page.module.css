@@ -429,6 +429,31 @@
   max-height: 85vh;
 }
 
+/* Holds the image + region boxes together so a pinch-zoom transform scales/pans them as one
+   unit — the container above stays a fixed-size viewport (overflow: hidden) that the zoomed
+   content is clipped to, which is what makes it feel like zooming "into" the receipt. */
+.previewZoomLayer {
+  position: relative;
+  display: inline-block;
+  transform-origin: 0 0;
+}
+
+.zoomResetButton {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 2;
+  border: 1px solid rgba(241, 228, 230, 0.35);
+  border-radius: 999px;
+  background: rgba(7, 4, 3, 0.85);
+  color: #F1E4E6;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: none;
+}
+
 /* ─── Fullscreen drawing mode (mobile) ──────────────────────────────
    Same region-selector content as the inline version, just rendered at
    full viewport size so precise box-drawing works on a small phone screen. */
