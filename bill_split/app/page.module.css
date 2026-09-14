@@ -408,6 +408,7 @@
   overflow: hidden;
   background: #13110E;
   cursor: crosshair;
+  touch-action: none;
 }
 
 .previewImage {
@@ -470,20 +471,35 @@
   bottom: -1.65rem;
 }
 
+/* The button is a bigger invisible hit area than the visible dot (::after) — small
+   circular touch targets are notoriously hard to grab precisely with a finger. */
 .resizeHandle {
   position: absolute;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resizeHandle::after {
+  content: "";
   width: 0.85rem;
   height: 0.85rem;
   border: 2px solid white;
   border-radius: 999px;
   background: rgba(7, 4, 3, 0.9);
-  padding: 0;
 }
 
-.handleNw { top: -0.42rem; left: -0.42rem; cursor: nwse-resize; }
-.handleNe { top: -0.42rem; right: -0.42rem; cursor: nesw-resize; }
-.handleSw { bottom: -0.42rem; left: -0.42rem; cursor: nesw-resize; }
-.handleSe { right: -0.42rem; bottom: -0.42rem; cursor: nwse-resize; }
+.handleNw { top: -0.8rem; left: -0.8rem; cursor: nwse-resize; }
+.handleNe { top: -0.8rem; right: -0.8rem; cursor: nesw-resize; }
+.handleSw { bottom: -0.8rem; left: -0.8rem; cursor: nesw-resize; }
+.handleSe { right: -0.8rem; bottom: -0.8rem; cursor: nwse-resize; }
 
 /* ─── Apply button ───────────────────────────────────────────────── */
 .applySelectionButton {
@@ -822,6 +838,7 @@
   width: 100%;
   height: 100%;
   cursor: crosshair;
+  touch-action: none;
 }
 
 .pageMiniTabs {

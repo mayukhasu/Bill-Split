@@ -401,15 +401,16 @@ export default function Home() {
     });
   };
 
-  const handlePreviewMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handlePreviewPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!previewContainerRef.current) return;
+    event.preventDefault();
     const rect = previewContainerRef.current.getBoundingClientRect();
     const startX = event.clientX - rect.left;
     const startY = event.clientY - rect.top;
     setDraftBox({ startX, startY, currentX: startX, currentY: startY });
   };
 
-  const handlePreviewMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handlePreviewPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!previewContainerRef.current) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
     const currentX = clamp(event.clientX - rect.left, 0, rect.width);
@@ -448,7 +449,7 @@ export default function Home() {
     setDraftBox((prev) => prev ? { ...prev, currentX, currentY } : null);
   };
 
-  const handlePreviewMouseUp = () => {
+  const handlePreviewPointerUp = () => {
     if (boxInteraction) {
       setBoxInteraction(null);
       return;
@@ -489,8 +490,9 @@ export default function Home() {
     }
   };
 
-  const handleBoxMouseDown = (event: React.MouseEvent<HTMLDivElement>, target: SelectionTarget) => {
+  const handleBoxPointerDown = (event: React.PointerEvent<HTMLDivElement>, target: SelectionTarget) => {
     event.stopPropagation();
+    event.preventDefault();
     if (!previewContainerRef.current || !activePageRegions[target]) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
     setSelectionTarget(target);
@@ -506,12 +508,13 @@ export default function Home() {
     setStatusMessage(`Adjusting ${label}. Drag to move, drag a corner to resize.`);
   };
 
-  const handleResizeMouseDown = (
-    event: React.MouseEvent<HTMLButtonElement>,
+  const handleResizePointerDown = (
+    event: React.PointerEvent<HTMLButtonElement>,
     target: SelectionTarget,
     handle: ResizeHandle
   ) => {
     event.stopPropagation();
+    event.preventDefault();
     if (!previewContainerRef.current || !activePageRegions[target]) return;
     const rect = previewContainerRef.current.getBoundingClientRect();
     setSelectionTarget(target);
@@ -675,19 +678,20 @@ export default function Home() {
     resizeScratchCanvas();
   }, [receiptComposite]);
 
-  const scratchPointFromEvent = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const scratchPointFromEvent = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = scratchCanvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
-  const handleScratchMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleScratchPointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    event.preventDefault();
     scratchDrawingRef.current = true;
     scratchLastPointRef.current = scratchPointFromEvent(event);
   };
 
-  const handleScratchMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleScratchPointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
     if (!scratchDrawingRef.current) return;
     const canvas = scratchCanvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -951,10 +955,14 @@ export default function Home() {
                 <div
                   ref={previewContainerRef}
                   className={styles.previewCanvas}
-                  onMouseDown={handlePreviewMouseDown}
-                  onMouseMove={handlePreviewMouseMove}
-                  onMouseUp={handlePreviewMouseUp}
-                  onMouseLeave={() => {
+                  onPointerDown={handlePreviewPointerDown}
+                  onPointerMove={handlePreviewPointerMove}
+                  onPointerUp={handlePreviewPointerUp}
+                  onPointerCancel={() => {
+                    setDraftBox(null);
+                    setBoxInteraction(null);
+                  }}
+                  onPointerLeave={() => {
                     setDraftBox(null);
                     setBoxInteraction(null);
                   }}
@@ -977,7 +985,7 @@ export default function Home() {
                             ? styles.selectedBoxActive
                             : ""
                         }`}
-                        onMouseDown={(e) => handleBoxMouseDown(e, option.key)}
+                        onPointerDown={(e) => handleBoxPointerDown(e, option.key)}
                         style={{
                           left: `${region.x * 100}%`,
                           top: `${region.y * 100}%`,
@@ -998,7 +1006,7 @@ export default function Home() {
                             key={handle}
                             type="button"
                             className={`${styles.resizeHandle} ${styles[`handle${handle.charAt(0).toUpperCase()}${handle.charAt(1)}` as keyof typeof styles]}`}
-                            onMouseDown={(e) => handleResizeMouseDown(e, option.key, handle)}
+                            onPointerDown={(e) => handleResizePointerDown(e, option.key, handle)}
                             aria-label={`Resize ${option.label}`}
                           />
                         ))}
@@ -1242,10 +1250,11 @@ export default function Home() {
                     <canvas
                       ref={scratchCanvasRef}
                       className={styles.scratchpadCanvas}
-                      onMouseDown={handleScratchMouseDown}
-                      onMouseMove={handleScratchMouseMove}
-                      onMouseUp={stopScratchDrawing}
-                      onMouseLeave={stopScratchDrawing}
+                      onPointerDown={handleScratchPointerDown}
+                      onPointerMove={handleScratchPointerMove}
+                      onPointerUp={stopScratchDrawing}
+                      onPointerLeave={stopScratchDrawing}
+                      onPointerCancel={stopScratchDrawing}
                     />
                   </div>
                 )}
