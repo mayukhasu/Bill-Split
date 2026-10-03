@@ -1,0 +1,105 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-brand-text);
+}
+
+.addButton {
+  border: none;
+  border-radius: 12px;
+  background: var(--color-brand-accent);
+  color: var(--color-brand-on-accent);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.totalsGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin-bottom: 2rem;
+}
+
+.totalsCard {
+  padding: 1.25rem;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 16px;
+  background: var(--color-brand-card);
+}
+
+.totalsCardTitle {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-brand-muted);
+  margin-bottom: 0.6rem;
+}
+
+.totalsRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: var(--color-brand-text);
+  padding: 0.3rem 0;
+}
+
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-brand-muted);
+  border: 1.5px dashed var(--color-brand-border);
+  border-radius: 16px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-brand-muted);
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1.5px solid var(--color-brand-border);
+}
+
+.table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--color-brand-border);
+  font-size: 0.88rem;
+  color: var(--color-brand-text);
+}
+
+.rowActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.editLink {
+  color: var(--color-brand-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.deleteButton {
+  border: none;
+  background: none;
+  color: #C97A96;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}

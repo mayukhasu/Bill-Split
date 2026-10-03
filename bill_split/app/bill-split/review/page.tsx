@@ -551,7 +551,7 @@ export default function ReviewPage() {
         <p className="mt-4 leading-7" style={{ color: "#C9A3AF" }}>
           No bill setup data found. Add names on the first page before coming here.
         </p>
-        <Link href="/" className="mt-6 inline-block font-semibold" style={{ color: "#6C720C" }}>
+        <Link href="/bill-split" className="mt-6 inline-block font-semibold" style={{ color: "#6C720C" }}>
           ← Back to Setup
         </Link>
       </section>
@@ -1143,7 +1143,7 @@ export default function ReviewPage() {
             </div>
           </div>
 
-          <Link href="/" className="mt-6 inline-block text-sm font-bold" style={{ color: "#6C720C" }}>
+          <Link href="/bill-split" className="mt-6 inline-block text-sm font-bold" style={{ color: "#6C720C" }}>
             ← Back to Setup
           </Link>
         </div>

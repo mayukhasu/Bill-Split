@@ -1,0 +1,274 @@
+.page {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-brand-text);
+  margin-bottom: 1rem;
+}
+
+.error {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--color-brand-border);
+  background: var(--color-brand-card-2);
+  color: var(--color-brand-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.card {
+  padding: 1.75rem;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 20px;
+  background: var(--color-brand-card);
+}
+
+.dropZone {
+  border: 2px dashed var(--color-brand-border);
+  border-radius: 16px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropZoneActive {
+  border-color: var(--color-brand-accent);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.dropZoneText {
+  color: var(--color-brand-muted);
+  font-size: 0.9rem;
+}
+
+.statusText {
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  color: var(--color-brand-muted);
+}
+
+.selectorSection {
+  margin-top: 1rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.toolbarButton {
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 10px;
+  background: var(--color-input-fill);
+  color: var(--color-brand-text);
+  padding: 0.45rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.toolbarButtonActive {
+  border-color: var(--color-brand-accent);
+  background: var(--color-brand-accent);
+  color: var(--color-brand-on-accent);
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--color-brand-muted);
+  margin-bottom: 0.75rem;
+}
+
+.previewCanvas {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  touch-action: none;
+  margin-bottom: 1rem;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  user-select: none;
+}
+
+.selectedBox {
+  position: absolute;
+  cursor: move;
+}
+
+.boxLabel {
+  position: absolute;
+  top: -1.4rem;
+  left: 0;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--color-brand-text);
+  background: var(--color-brand-card);
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.resizeHandle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--color-brand-card);
+  background: var(--color-brand-accent);
+  padding: 0;
+  cursor: pointer;
+}
+
+.handlenw {
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
+}
+.handlene {
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
+}
+.handlesw {
+  bottom: -7px;
+  left: -7px;
+  cursor: nesw-resize;
+}
+.handlese {
+  bottom: -7px;
+  right: -7px;
+  cursor: nwse-resize;
+}
+
+.draftBox {
+  position: absolute;
+  border: 2px dashed var(--color-brand-accent);
+  background: color-mix(in srgb, var(--color-brand-accent) 15%, transparent);
+}
+
+.primaryButton {
+  border: none;
+  border-radius: 12px;
+  background: var(--color-brand-accent);
+  color: var(--color-brand-on-accent);
+  padding: 0.75rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 12px;
+  background: var(--color-input-fill);
+  color: var(--color-brand-text);
+  padding: 0.75rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rowsSection {
+  margin-top: 1rem;
+}
+
+.summaryBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: var(--color-brand-card-2);
+  border: 1.5px solid var(--color-brand-border);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-brand-text);
+  margin-bottom: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryMuted {
+  color: var(--color-brand-muted);
+  font-weight: 600;
+}
+
+.rowsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 3.5rem 4.5rem 9rem 6.5rem 1.75rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rowName,
+.rowNumber,
+.rowCategory {
+  padding: 0.5rem 0.6rem;
+  border: 1.5px solid var(--color-input-fill);
+  border-radius: 8px;
+  background: var(--color-input-fill);
+  color: var(--color-brand-text);
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.rowTotal {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-brand-text);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.rowTaxShare {
+  color: var(--color-brand-muted);
+  font-weight: 600;
+}
+
+.rowRemove {
+  border: none;
+  background: none;
+  color: #C97A96;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.saveBar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}

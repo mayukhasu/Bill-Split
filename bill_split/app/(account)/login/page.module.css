@@ -1,0 +1,49 @@
+.card {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 2rem 1.75rem;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 20px;
+  background: var(--color-brand-card);
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-brand-text);
+  margin-bottom: 0.4rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--color-brand-muted);
+  margin-bottom: 1.5rem;
+}
+
+.error {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--color-brand-border);
+  background: var(--color-brand-card-2);
+  color: var(--color-brand-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.signInButton {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  background: var(--color-brand-accent);
+  color: var(--color-brand-on-accent);
+  padding: 0.9rem 1rem;
+  font-size: 0.97rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.signInButton:hover {
+  background: var(--color-brand-accent-h);
+}
