@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   EMPTY_PAGE_REGIONS,
   pageHasBothColumns,
@@ -50,6 +50,18 @@ export function useRegionSelector() {
   const activePageRegions = selectedRegions[activePage] ?? EMPTY_PAGE_REGIONS;
   const activePreviewPage = previewPages[activePage] ?? null;
   const hasCompletePage = Object.values(selectedRegions).some(pageHasBothColumns);
+
+  // Reset pinch-zoom whenever fullscreen mode is entered or exited, so it never opens
+  // already zoomed/panned from a previous session, and the normal (non-fullscreen) canvas
+  // never sees a non-identity transform. Kept internal to the hook (rather than exposing
+  // zoom setters to callers) since zoom is this hook's own state to manage.
+  useEffect(() => {
+    setZoomScale(1);
+    setZoomOffset({ x: 0, y: 0 });
+    activePointersRef.current.clear();
+    pinchStateRef.current = null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFullscreenDrawing]);
 
   // Call this whenever a new file is picked, so a second upload doesn't inherit boxes drawn
   // on the previous receipt.
@@ -277,6 +289,14 @@ export function useRegionSelector() {
     setBoxInteraction(null);
   };
 
+  // For the "reset zoom" button shown once zoomed in — distinct from the automatic reset
+  // effect above, which only fires when isFullscreenDrawing itself changes, not on demand
+  // while already fullscreen.
+  const resetZoom = () => {
+    setZoomScale(1);
+    setZoomOffset({ x: 0, y: 0 });
+  };
+
   return {
     previewContainerRef,
     previewPages,
@@ -304,5 +324,6 @@ export function useRegionSelector() {
     handleResizePointerDown,
     releaseFullscreenPointer,
     cancelInteraction,
+    resetZoom,
   };
 }

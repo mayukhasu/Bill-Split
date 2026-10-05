@@ -14,6 +14,32 @@
   margin-bottom: 1.25rem;
 }
 
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.pageHeader .title {
+  margin-bottom: 0;
+}
+
+.scanHeaderButton {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-brand-accent);
+  color: var(--color-brand-on-accent);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 .error {
   margin-bottom: 1.25rem;
   padding: 0.75rem 1rem;
@@ -71,9 +97,16 @@
   resize: vertical;
 }
 
+.actionsRow {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Full-width by default (the edit page uses this standalone, with no Cancel sibling); inside
+   .actionsRow (the new-expense page, paired with Cancel) it instead shares the row equally. */
 .submitButton {
   width: 100%;
-  margin-top: 0.5rem;
   border: none;
   border-radius: 12px;
   background: var(--color-brand-accent);
@@ -84,12 +117,23 @@
   cursor: pointer;
 }
 
-.scanLink {
-  display: block;
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.85rem;
+.actionsRow .submitButton {
+  width: auto;
+  flex: 1;
+}
+
+.secondaryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-brand-text);
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-brand-accent);
+  cursor: pointer;
   text-decoration: none;
 }

@@ -1,10 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "MoneySplit",
   description: "MoneySplit — split bills simply",
+};
+
+// Without this, mobile browsers fall back to rendering at a desktop-width viewport and
+// zooming the whole page out to fit — this is what makes everything look tiny and the
+// layout look broken on a phone, independent of any CSS issue.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

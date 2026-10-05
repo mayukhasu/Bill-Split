@@ -56,6 +56,41 @@ function parseLineItemsForm(formData: FormData): { error: string } | {
   return { error: null, expenseId, items, receiptPath: receiptPathRaw || null };
 }
 
+// Keeps Storage usage bounded as more users/receipts accumulate: only the 10 most recently
+// uploaded receipts per user are kept. Since receipts are uploaded one at a time, there's
+// normally at most one excess row to prune per call — so rather than fetching every
+// receipt-bearing expense and slicing it in JS, this asks Postgres directly for whatever
+// sits PAST position 10 (`.range`, backed by the partial index on receipt_uploaded_at), which
+// stays cheap as the table grows and needs no separate "what's next to delete" bookkeeping
+// that could drift out of sync with the real expenses table. A small safety margin beyond 1
+// row covers edge cases (e.g. the limit being lowered later) without changing the normal-case
+// cost at all — the range is still a handful of rows, not the whole list.
+const RECEIPT_RETENTION_LIMIT = 10;
+const RECEIPT_PRUNE_SAFETY_MARGIN = 5;
+
+async function pruneOldReceipts(supabase: Awaited<ReturnType<typeof getSupabaseServerClient>>, userId: string) {
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("id, receipt_path")
+    .eq("user_id", userId)
+    .not("receipt_path", "is", null)
+    .order("receipt_uploaded_at", { ascending: false })
+    .range(RECEIPT_RETENTION_LIMIT, RECEIPT_RETENTION_LIMIT + RECEIPT_PRUNE_SAFETY_MARGIN - 1);
+  if (error || !data || data.length === 0) return;
+
+  const paths = data.map((row) => row.receipt_path).filter((path): path is string => Boolean(path));
+  if (paths.length > 0) {
+    await supabase.storage.from("receipts").remove(paths);
+  }
+  await supabase
+    .from("expenses")
+    .update({ receipt_path: null, receipt_uploaded_at: null })
+    .in(
+      "id",
+      data.map((row) => row.id)
+    );
+}
+
 // Replaces an expense's entire line-item breakdown and recomputes its amount from the new
 // rows' totals. Deleting-then-inserting (rather than diffing) is the simplest correct thing
 // here — the scan page always submits its full current row list, never a partial edit, so
@@ -109,8 +144,13 @@ export async function saveLineItems(formData: FormData) {
   const updateValues: Record<string, unknown> = { amount };
   // Only overwrite receipt_path when this submission actually uploaded a new file — omitting
   // the key (rather than sending null) leaves a previously-saved receipt untouched if the
-  // user is just re-categorizing rows without re-uploading.
-  if (parsed.receiptPath) updateValues.receipt_path = parsed.receiptPath;
+  // user is just re-categorizing rows without re-uploading. receipt_uploaded_at moves in
+  // lockstep with receipt_path, since it exists purely to answer "which receipts are oldest"
+  // for pruneOldReceipts below.
+  if (parsed.receiptPath) {
+    updateValues.receipt_path = parsed.receiptPath;
+    updateValues.receipt_uploaded_at = new Date().toISOString();
+  }
 
   const { error: updateError } = await supabase
     .from("expenses")
@@ -119,6 +159,10 @@ export async function saveLineItems(formData: FormData) {
   if (updateError) {
     redirect(`/expenses/${parsed.expenseId}/scan?error=${encodeURIComponent(updateError.message)}`);
   }
+
+  // Only worth checking when this save actually added a new receipt — the count of
+  // receipt-bearing expenses can't have grown otherwise.
+  if (parsed.receiptPath) await pruneOldReceipts(supabase, user.id);
 
   revalidatePath("/expenses");
   revalidatePath(`/expenses/${parsed.expenseId}/edit`);

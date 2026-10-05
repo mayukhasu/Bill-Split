@@ -22,10 +22,13 @@
   text-decoration: none;
 }
 
+/* Always exactly two cards (By Category, By Month) — a fixed two-column grid, not
+   auto-fit/minmax, so they stay side by side at any width instead of minmax's 14rem minimum
+   forcing a stack on narrow screens. */
 .totalsGrid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-template-columns: 1fr 1fr;
   margin-bottom: 2rem;
 }
 
@@ -34,6 +37,7 @@
   border: 1.5px solid var(--color-brand-border);
   border-radius: 16px;
   background: var(--color-brand-card);
+  min-width: 0;
 }
 
 .totalsCardTitle {
@@ -48,9 +52,28 @@
 .totalsRow {
   display: flex;
   justify-content: space-between;
+  gap: 0.5rem;
   font-size: 0.88rem;
   color: var(--color-brand-text);
   padding: 0.3rem 0;
+}
+
+.totalsRow span:first-child {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .totalsGrid {
+    gap: 0.6rem;
+  }
+  .totalsCard {
+    padding: 0.85rem;
+  }
+  .totalsRow {
+    font-size: 0.78rem;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
 }
 
 .empty {
@@ -61,8 +84,30 @@
   border-radius: 16px;
 }
 
+/* Hidden checkbox + styled label — a CSS-only show/hide toggle for the Date/Payment columns
+   on narrow screens, with no JS and no Client Component needed (see page.tsx). */
+.columnToggleInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.columnToggleLabel {
+  display: none;
+  margin-bottom: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-brand-accent);
+  cursor: pointer;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
 .table {
   width: 100%;
+  min-width: 32rem;
   border-collapse: collapse;
 }
 
@@ -84,9 +129,61 @@
   color: var(--color-brand-text);
 }
 
-.rowActions {
+@media (max-width: 640px) {
+  /* With Date/Payment hidden, the remaining Merchant/Category/Amount/⋮ columns fit a phone
+     screen on their own — dropping the fixed min-width lets the table actually shrink to
+     that instead of forcing a scrollbar regardless. */
+  .table {
+    min-width: 0;
+  }
+  .columnToggleLabel {
+    display: inline-block;
+  }
+  .optionalCol {
+    display: none;
+  }
+  /* General sibling selector: the checkbox and .tableScroll are siblings in the markup
+     (see page.tsx) — checking it reveals the optional columns again. Content may then be
+     wider than the screen, which .tableScroll's overflow-x:auto handles as a fallback. */
+  .columnToggleInput:checked ~ .tableScroll .optionalCol {
+    display: table-cell;
+  }
+}
+
+.rowMenu {
+  position: relative;
+}
+
+/* Hides the browser's default disclosure triangle so this reads as a plain "⋮" button. */
+.rowMenuToggle {
+  list-style: none;
+  cursor: pointer;
+  color: var(--color-brand-muted);
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 0.2rem 0.5rem;
+  user-select: none;
+}
+.rowMenuToggle::-webkit-details-marker {
+  display: none;
+}
+
+.rowMenuPanel {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 10;
   display: flex;
-  gap: 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+  padding: 0.75rem;
+  min-width: 9rem;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 12px;
+  background: var(--color-brand-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .editLink {
@@ -102,4 +199,56 @@
   font-weight: 700;
   cursor: pointer;
   padding: 0;
+}
+
+.saveValueBanner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.saveValueRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--color-brand-border);
+  border-radius: 12px;
+  background: var(--color-brand-card-2);
+  color: var(--color-brand-text);
+  font-size: 0.85rem;
+}
+
+.saveValueActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.saveValueConfirm,
+.saveValueDismiss {
+  border: none;
+  border-radius: 8px;
+  width: 1.8rem;
+  height: 1.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saveValueConfirm {
+  background: var(--color-brand-accent);
+  color: var(--color-brand-on-accent);
+}
+
+.saveValueConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveValueDismiss {
+  background: transparent;
+  border: 1.5px solid var(--color-brand-border);
+  color: var(--color-brand-muted);
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { getCategories, getExpenseById } from "@/lib/expenses/queries";
+import { getCategories, getExpenseById, getSavedValues } from "@/lib/expenses/queries";
 import { updateExpense } from "../../actions";
 // Reusing the new-expense form's stylesheet — Next.js CSS Modules work fine imported from a
 // sibling-ish route; the classnames it generates don't care which page imports them.
@@ -27,7 +27,12 @@ export default async function EditExpensePage({
   const { id } = await params;
   const { error } = await searchParams;
 
-  const [expense, categories] = await Promise.all([getExpenseById(id), getCategories()]);
+  const [expense, categories, savedMerchants, savedCardNicknames] = await Promise.all([
+    getExpenseById(id),
+    getCategories(),
+    getSavedValues("merchant"),
+    getSavedValues("card_nickname"),
+  ]);
 
   // getExpenseById returns null both when the row doesn't exist AND when it belongs to
   // someone else — intentionally indistinguishable from the outside (see its comment in
@@ -36,7 +41,12 @@ export default async function EditExpensePage({
 
   return (
     <div className={styles.card}>
-      <h1 className={styles.title}>Edit Expense</h1>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.title}>Edit Expense</h1>
+        <Link href={`/expenses/${expense.id}/scan`} className={styles.scanHeaderButton}>
+          {expense.lineItems.length > 0 ? `Edit breakdown (${expense.lineItems.length})` : "Scan Receipt"}
+        </Link>
+      </div>
       {error && <p className={styles.error}>{error}</p>}
 
       <form action={updateExpense}>
@@ -49,7 +59,7 @@ export default async function EditExpensePage({
             name="amount"
             type="number"
             min="0.01"
-            step="1.00"
+            step="0.01"
             required
             defaultValue={expense.amount}
             className={styles.input}
@@ -91,9 +101,15 @@ export default async function EditExpensePage({
             name="merchant"
             type="text"
             required
+            list="merchantOptions"
             defaultValue={expense.merchant}
             className={styles.input}
           />
+          <datalist id="merchantOptions">
+            {savedMerchants.map((value) => (
+              <option key={value} value={value} />
+            ))}
+          </datalist>
         </div>
 
         <div className={styles.field}>
@@ -120,9 +136,15 @@ export default async function EditExpensePage({
             id="cardNickname"
             name="cardNickname"
             type="text"
+            list="cardNicknameOptions"
             defaultValue={expense.cardNickname ?? ""}
             className={styles.input}
           />
+          <datalist id="cardNicknameOptions">
+            {savedCardNicknames.map((value) => (
+              <option key={value} value={value} />
+            ))}
+          </datalist>
         </div>
 
         <div className={styles.field}>
@@ -136,12 +158,6 @@ export default async function EditExpensePage({
           Save Changes
         </button>
       </form>
-
-      <Link href={`/expenses/${expense.id}/scan`} className={styles.scanLink}>
-        {expense.lineItems.length > 0
-          ? `Edit receipt breakdown (${expense.lineItems.length} items)`
-          : "Scan receipt to break this into categories"}
-      </Link>
     </div>
   );
 }

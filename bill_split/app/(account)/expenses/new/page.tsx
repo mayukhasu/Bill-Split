@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { getCategories } from "@/lib/expenses/queries";
+import { getCategories, getSavedValues } from "@/lib/expenses/queries";
 import { createExpense } from "../actions";
 import styles from "./page.module.css";
 
@@ -27,14 +28,38 @@ export default async function NewExpensePage({
   if (!user) redirect("/login?next=/expenses/new");
 
   const { error } = await searchParams;
-  const categories = await getCategories();
+  const [categories, savedMerchants, savedCardNicknames] = await Promise.all([
+    getCategories(),
+    getSavedValues("merchant"),
+    getSavedValues("card_nickname"),
+  ]);
 
   return (
     <div className={styles.card}>
-      <h1 className={styles.title}>Add Expense</h1>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.title}>Add Expense</h1>
+        {/* Submits the SAME form as the Save button, just with a different `intent` value —
+            createExpense reads that to redirect to this new expense's scan page instead of
+            the dashboard once it's saved, and fills in placeholder values for anything left
+            blank (the whole point of this button is skipping manual entry before scanning).
+            `form="expenseForm"` is what lets a button outside the <form> tag (useful for this
+            top-right placement) still submit it. `formNoValidate` skips the browser's native
+            required-field validation for this submission specifically — the normal Save
+            button still enforces it normally. */}
+        <button
+          type="submit"
+          name="intent"
+          value="scan"
+          form="expenseForm"
+          formNoValidate
+          className={styles.scanHeaderButton}
+        >
+          Scan Receipt
+        </button>
+      </div>
       {error && <p className={styles.error}>{error}</p>}
 
-      <form action={createExpense}>
+      <form id="expenseForm" action={createExpense}>
         <div className={styles.field}>
           <label className={styles.label} htmlFor="amount">Amount</label>
           <input
@@ -42,7 +67,7 @@ export default async function NewExpensePage({
             name="amount"
             type="number"
             min="0.01"
-            step="1.00"
+            step="0.01"
             required
             className={styles.input}
             placeholder="0.00"
@@ -75,7 +100,15 @@ export default async function NewExpensePage({
 
         <div className={styles.field}>
           <label className={styles.label} htmlFor="merchant">Merchant</label>
-          <input id="merchant" name="merchant" type="text" required className={styles.input} />
+          {/* <datalist> gives native type-to-filter-or-type-anything suggestions with zero
+              JS/dependencies — picking a listed option or typing something new both just
+              work as normal text input. */}
+          <input id="merchant" name="merchant" type="text" required list="merchantOptions" className={styles.input} />
+          <datalist id="merchantOptions">
+            {savedMerchants.map((value) => (
+              <option key={value} value={value} />
+            ))}
+          </datalist>
         </div>
 
         <div className={styles.field}>
@@ -102,9 +135,15 @@ export default async function NewExpensePage({
             id="cardNickname"
             name="cardNickname"
             type="text"
+            list="cardNicknameOptions"
             placeholder="e.g. Chase Sapphire — not a real card number"
             className={styles.input}
           />
+          <datalist id="cardNicknameOptions">
+            {savedCardNicknames.map((value) => (
+              <option key={value} value={value} />
+            ))}
+          </datalist>
         </div>
 
         <div className={styles.field}>
@@ -114,9 +153,14 @@ export default async function NewExpensePage({
           <textarea id="note" name="note" className={styles.textarea} />
         </div>
 
-        <button type="submit" className={styles.submitButton}>
-          Save Expense
-        </button>
+        <div className={styles.actionsRow}>
+          <Link href="/expenses" className={styles.secondaryButton}>
+            Cancel
+          </Link>
+          <button type="submit" className={styles.submitButton}>
+            Save Expense
+          </button>
+        </div>
       </form>
     </div>
   );

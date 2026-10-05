@@ -86,6 +86,27 @@ export async function getCategories(): Promise<Category[]> {
   return data;
 }
 
+// A user's saved merchant names / card nicknames, for the <datalist> suggestions on the
+// expense form — unlike categories, this IS user-scoped (everyone's own frequent merchants
+// are different), hence the explicit user_id filter here.
+export async function getSavedValues(kind: "merchant" | "card_nickname"): Promise<string[]> {
+  const supabase = await getSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("saved_expense_values")
+    .select("value")
+    .eq("user_id", user.id)
+    .eq("kind", kind)
+    .order("value");
+
+  if (error || !data) return [];
+  return data.map((row) => row.value);
+}
+
 // A scanned, categorized receipt only ever lives in Supabase Storage, in a private bucket
 // (public = false), so there's no bare URL that just works — this mints one that does, but
 // only for 60 seconds, and only after confirming the expense (and therefore the receipt)
